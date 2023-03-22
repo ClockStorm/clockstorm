@@ -135,23 +135,33 @@ interface PresetDetailSingle {
 }
 
 const createSoundPresets = async (extensionOptions: ExtensionOptions) => {
-  const presetSoundCount = 0
-
   const presetSoundDetails: PresetDetailSingle[] = [
     {
-      url: 'sounds/preset-1.wav',
+      url: 'sounds/cricket.wav',
       thumbnailUrl: 'sounds/thumbnail.png',
-      title: 'ClockStorm',
+      title: 'Cricket',
+    },
+    {
+      url: 'sounds/rooster.wav',
+      thumbnailUrl: 'sounds/thumbnail.png',
+      title: 'Rooster by InspectorJ',
+    },
+    {
+      url: 'sounds/siren.wav',
+      thumbnailUrl: 'sounds/thumbnail.png',
+      title: 'Siren by guitarguy1985',
+    },
+    {
+      url: 'sounds/phone.wav',
+      thumbnailUrl: 'sounds/thumbnail.png',
+      title: 'Phone by infobandit',
+    },
+    {
+      url: 'sounds/microwave.wav',
+      thumbnailUrl: 'sounds/thumbnail.png',
+      title: 'Microwave by Aidan McArthur',
     },
   ]
-
-  for (let presetSoundNumber = 1; presetSoundNumber <= presetSoundCount; presetSoundNumber++) {
-    presetSoundDetails.push({
-      url: `sounds/preset-${presetSoundNumber}.wav`,
-      thumbnailUrl: `sounds/preset-${presetSoundNumber}-thumbnail.png`,
-      title: `Preset ${presetSoundNumber}`,
-    })
-  }
 
   for (const presetSoundDetailsSingle of presetSoundDetails) {
     await createSingleSound(

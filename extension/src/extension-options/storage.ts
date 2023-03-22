@@ -9,7 +9,7 @@ export const getExtensionOptions = async (): Promise<ExtensionOptions> => {
   }
 
   return {
-    soundDataUrl: 'sounds/preset-1.wav',
+    soundDataUrl: 'sounds/cricket.wav',
     gifDataUrl: 'gifs/clockstorm.gif',
     endOfWeekTimesheetReminder: true,
     dailyTimeEntryReminder: true,
