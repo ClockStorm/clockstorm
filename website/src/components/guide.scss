@@ -1,0 +1,137 @@
+@keyframes bganimation {
+  @for $i from 0 through 100 {
+    #{$i}% {
+      background: hsl(0 + ($i * 3), 100%, 70%);
+    }
+  }
+}
+
+#install-status {
+  div {
+    p {
+      margin-bottom: 10px;
+      background: #4b0cf5;
+      color: white;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    &.no-install-detected {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      a {
+        padding: 20px;
+        background-color: rgb(75, 12, 245);
+        color: white;
+        border-radius: 5px;
+        font-size: 20px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      p {
+        color: black;
+        animation-name: bganimation;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        flex: 1;
+        margin-right: 20px;
+      }
+    }
+
+    &.install-detected {
+      display: none;
+    }
+  }
+}
+
+body.clockstorm-active #install-status div.install-detected {
+  display: block;
+}
+
+body.clockstorm-active #install-status div.no-install-detected {
+  display: none;
+}
+
+#page #guide {
+  text-align: left;
+
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  p.headline {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  ol {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    list-style: decimal;
+  }
+
+  li {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: #4b0cf5;
+    text-decoration: underline;
+  }
+}
+
+#split {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+
+  div.left {
+    flex: 1;
+    margin-right: 40px;
+  }
+
+  div.right {
+    width: 40%;
+    border-radius: 20px;
+    padding: 10px;
+    -webkit-box-shadow: 4px 7px 41px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 4px 7px 41px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 4px 7px 41px 0px rgba(0, 0, 0, 0.75);
+
+    img {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+
+    div.left {
+      margin-right: 0;
+    }
+
+    div.right {
+      width: 100%;
+      max-width: 396px;
+      margin-top: 20px;
+    }
+  }
+}
