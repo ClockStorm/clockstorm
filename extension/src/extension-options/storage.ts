@@ -13,5 +13,6 @@ export const getExtensionOptions = async (): Promise<ExtensionOptions> => {
     gifDataUrl: 'gifs/clockstorm.gif',
     endOfWeekTimesheetReminder: true,
     dailyTimeEntryReminder: true,
+    endOfMonthTimesheetReminder: true,
   }
 }

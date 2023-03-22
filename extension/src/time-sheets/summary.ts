@@ -1,4 +1,12 @@
-import { addDays, DayOfWeek } from '../types/dates'
+import {
+  addDays,
+  DayOfWeek,
+  dayOfWeekIndexes,
+  getDayOfWeek,
+  getLastDayOfMonth,
+  getTodayDateOnly,
+  isBusinessDayOfWeek,
+} from '../types/dates'
 import { DaysFilled, TimeSheet, TimeSheetSummary, WeekStatus } from '../types/time-sheet'
 
 const determineWeekStatusFromTimeCards = (timeSheet: TimeSheet): WeekStatus => {
@@ -73,18 +81,42 @@ const determineTotalDaysSavedFromTimeCards = (timeSheet: TimeSheet): number => {
   return totalDaysSaved
 }
 
-const determineTimeRemaining = (timeSheet: TimeSheet): string => {
+const determineNextDueDate = (timeSheet: TimeSheet, alertableLastDayOfMonth: DayOfWeek | null): Date => {
+  const deadlineHour = 17 // 5pm
   const now = new Date()
+
+  if (alertableLastDayOfMonth) {
+    const todayDateOnly = getTodayDateOnly()
+    const todayDayOfWeek = getDayOfWeek(todayDateOnly)
+    const todayDayOfWeekIndex = dayOfWeekIndexes[todayDayOfWeek]
+    const alertableLastDayOfMonthIndex = dayOfWeekIndexes[alertableLastDayOfMonth]
+    const alertableDateOnly = addDays(todayDateOnly, alertableLastDayOfMonthIndex - todayDayOfWeekIndex)
+
+    const alertableDueDate = new Date(
+      alertableDateOnly.year,
+      alertableDateOnly.month - 1,
+      alertableDateOnly.day,
+      deadlineHour,
+      0,
+      0,
+    )
+
+    // If we have not yet past the alertable due date, return that date
+    if (now.getTime() <= alertableDueDate.getTime()) {
+      return alertableDueDate
+    }
+  }
+
   const dueDateOnly = addDays(timeSheet.dates.monday, 3)
-  const dueDate = new Date(
-    dueDateOnly.year,
-    dueDateOnly.month - 1,
-    dueDateOnly.day,
-    17, // 5pm
-    0,
-    0,
-  )
-  const dueDateMillisecondsRemaining = dueDate.getTime() - now.getTime()
+  const dueDate = new Date(dueDateOnly.year, dueDateOnly.month - 1, dueDateOnly.day, deadlineHour, 0, 0)
+
+  return dueDate
+}
+
+const determineTimeRemaining = (timeSheet: TimeSheet, alertableLastDayOfMonth: DayOfWeek | null): string => {
+  const now = new Date()
+  const nextDueDate = determineNextDueDate(timeSheet, alertableLastDayOfMonth)
+  const dueDateMillisecondsRemaining = nextDueDate.getTime() - now.getTime()
 
   if (dueDateMillisecondsRemaining < 0) {
     return '00:00:00'
@@ -98,12 +130,33 @@ const determineTimeRemaining = (timeSheet: TimeSheet): string => {
   }
 }
 
+const determineAlertableLastDayOfMonth = (timeSheet: TimeSheet): DayOfWeek | null => {
+  const today = getTodayDateOnly()
+  const lastDayOfMonth = getLastDayOfMonth(today.month, today.year)
+
+  for (const dayOfWeek of Object.keys(timeSheet.dates) as DayOfWeek[]) {
+    const date = timeSheet.dates[dayOfWeek]
+
+    if (!isBusinessDayOfWeek(dayOfWeek)) {
+      continue
+    }
+
+    if (date.day === lastDayOfMonth) {
+      return dayOfWeek
+    }
+  }
+
+  return null
+}
+
 export const summarizeTimeSheet = (timeSheet: TimeSheet): TimeSheetSummary => {
+  const alertableLastDayOfMonth = determineAlertableLastDayOfMonth(timeSheet)
   return {
     weekStatus: determineWeekStatusFromTimeCards(timeSheet),
     daysFilled: determineDaysFilledFromTimeCards(timeSheet),
     totalDaysSubmitted: determineTotalDaysSubmittedFromTimeCards(timeSheet),
     totalDaysSaved: determineTotalDaysSavedFromTimeCards(timeSheet),
-    timeRemaining: determineTimeRemaining(timeSheet),
+    timeRemaining: determineTimeRemaining(timeSheet, alertableLastDayOfMonth),
+    alertableLastDayOfMonth,
   }
 }

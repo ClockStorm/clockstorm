@@ -40,6 +40,44 @@ const dates: TimeSheetDates = {
   },
 }
 
+const endOfWeekDates: TimeSheetDates = {
+  monday: {
+    year: 2023,
+    month: 5,
+    day: 29,
+  },
+  tuesday: {
+    year: 2023,
+    month: 5,
+    day: 30,
+  },
+  wednesday: {
+    year: 2023,
+    month: 5,
+    day: 31,
+  },
+  thursday: {
+    year: 2023,
+    month: 6,
+    day: 1,
+  },
+  friday: {
+    year: 2023,
+    month: 6,
+    day: 2,
+  },
+  saturday: {
+    year: 2023,
+    month: 6,
+    day: 3,
+  },
+  sunday: {
+    year: 2023,
+    month: 6,
+    day: 4,
+  },
+}
+
 describe('summarizeTimeSheet', () => {
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 2, 19, 0, 0, 0))
@@ -65,6 +103,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'no-time-cards',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(emptyTimeSheet)).toEqual(expected)
@@ -103,6 +142,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsubmitted',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -153,6 +193,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 5,
       timeRemaining: '00:00:00',
       weekStatus: 'all-submitted-or-approved',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -203,6 +244,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 2,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsubmitted',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -253,6 +295,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 2,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsubmitted',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -291,6 +334,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsaved',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -331,6 +375,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '25:00:00',
       weekStatus: 'some-unsaved',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -371,6 +416,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:01',
       weekStatus: 'some-unsaved',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -411,6 +457,7 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsaved',
+      alertableLastDayOfMonth: null,
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
@@ -449,6 +496,91 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 5,
       timeRemaining: '00:00:00',
       weekStatus: 'all-submitted-or-approved',
+      alertableLastDayOfMonth: null,
+    }
+
+    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+  })
+
+  test('when the end of the week is wednesday', () => {
+    jest.useFakeTimers().setSystemTime(new Date(2023, 4, 31, 0, 0, 0))
+
+    const timeSheet: TimeSheet = {
+      dates: endOfWeekDates,
+      timeCards: [],
+    }
+
+    const expected: TimeSheetSummary = {
+      daysFilled: {
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false,
+      },
+      totalDaysSaved: 0,
+      totalDaysSubmitted: 0,
+      timeRemaining: '17:00:00',
+      weekStatus: 'no-time-cards',
+      alertableLastDayOfMonth: 'wednesday',
+    }
+
+    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+  })
+
+  test('when the end of the week is wednesday + buzzer beater', () => {
+    jest.useFakeTimers().setSystemTime(new Date(2023, 4, 31, 17, 0, 0))
+
+    const timeSheet: TimeSheet = {
+      dates: endOfWeekDates,
+      timeCards: [],
+    }
+
+    const expected: TimeSheetSummary = {
+      daysFilled: {
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false,
+      },
+      totalDaysSaved: 0,
+      totalDaysSubmitted: 0,
+      timeRemaining: '00:00:00',
+      weekStatus: 'no-time-cards',
+      alertableLastDayOfMonth: 'wednesday',
+    }
+
+    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+  })
+
+  test('when the end of the week is wednesday + buzzer beater failure', () => {
+    jest.useFakeTimers().setSystemTime(new Date(2023, 4, 31, 17, 0, 1))
+
+    const timeSheet: TimeSheet = {
+      dates: endOfWeekDates,
+      timeCards: [],
+    }
+
+    const expected: TimeSheetSummary = {
+      daysFilled: {
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false,
+      },
+      totalDaysSaved: 0,
+      totalDaysSubmitted: 0,
+      timeRemaining: '23:59:59',
+      weekStatus: 'no-time-cards',
+      alertableLastDayOfMonth: 'wednesday',
     }
 
     expect(summarizeTimeSheet(timeSheet)).toEqual(expected)

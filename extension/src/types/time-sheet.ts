@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { z } from 'zod'
-import { DateOnly } from './dates'
+import { DateOnly, DayOfWeek } from './dates'
 
 export const TimeCardStatus = z.union([
   z.literal('submitted'),
@@ -78,4 +78,5 @@ export interface TimeSheetSummary {
   totalDaysSubmitted: number
   totalDaysSaved: number
   timeRemaining: string
+  alertableLastDayOfMonth: DayOfWeek | null
 }

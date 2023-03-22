@@ -2,6 +2,7 @@ import { getExtensionOptions } from '../extension-options/storage'
 import { getTimeSheet } from '../time-sheets/storage'
 import { summarizeTimeSheet } from '../time-sheets/summary'
 import {
+  DayOfWeek,
   dayOfWeekIndexes,
   getAllDaysPriorInWeek,
   getDayOfWeek,
@@ -17,6 +18,9 @@ export const shouldNotifyUser = async (): Promise<boolean> => {
   const summary = summarizeTimeSheet(timeSheet)
   const daysPrior = getAllDaysPriorInWeek(dayOfWeek, true, true)
   const extensionOptions = await getExtensionOptions()
+  const dayOfWeekIndex = dayOfWeekIndexes[dayOfWeek]
+  const dueDayOfWeek: DayOfWeek = 'thursday'
+  const dueDayOfWeekIndex = dayOfWeekIndexes[dueDayOfWeek]
 
   for (const dayPrior of daysPrior) {
     if (
@@ -27,12 +31,16 @@ export const shouldNotifyUser = async (): Promise<boolean> => {
     }
   }
 
-  const dayOfWeekIndex = dayOfWeekIndexes[dayOfWeek]
-  const thursdayIndex = dayOfWeekIndexes.thursday
+  if (summary.alertableLastDayOfMonth && extensionOptions.endOfMonthTimesheetReminder) {
+    const alertableLastDayOfMonthIndex = dayOfWeekIndexes[summary.alertableLastDayOfMonth]
+    if (dayOfWeekIndex >= alertableLastDayOfMonthIndex && summary.weekStatus !== 'all-submitted-or-approved') {
+      return true
+    }
+  }
 
   return (
     extensionOptions.endOfWeekTimesheetReminder &&
-    dayOfWeekIndex >= thursdayIndex &&
+    dayOfWeekIndex >= dueDayOfWeekIndex &&
     summary.weekStatus !== 'all-submitted-or-approved'
   )
 }
