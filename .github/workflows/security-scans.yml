@@ -1,0 +1,38 @@
+name: Security Scans
+
+on:
+  pull_request_target:
+    branches: [main]
+
+  push:
+    branches: [main]
+
+jobs:
+  security-scans:
+    name: Snyk Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Snyk Monitor
+        uses: snyk/actions/node@master
+        with:
+          command: 'monitor'
+          args: '--all-projects'
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk Test
+        uses: snyk/actions/node@master
+        with:
+          command: 'test'
+          args: '--all-projects'
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk Code Test
+        uses: snyk/actions/node@master
+        with:
+          command: 'code'
+          args: 'test'
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

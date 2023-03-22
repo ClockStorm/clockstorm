@@ -1,0 +1,30 @@
+body {
+  width: 400px;
+  margin: 8px;
+  line-height: 2em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+span {
+  font-family: Roboto, system-ui, sans-serif;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 14px;
+}
+.timecard-dynamic-value {
+  color: red;
+}
+
+#status {
+  display: none;
+  line-height: 1.2em;
+}

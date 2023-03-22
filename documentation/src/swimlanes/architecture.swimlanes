@@ -1,0 +1,33 @@
+_: **1. Data propagation**
+
+if: If we are on the FinancialForce _**time sheet**_ page
+	Content Script -> Content Script: {fas-spinner} Scrape time sheet data from the DOM
+  Content Script -> Storage: Save time sheet data to Storage
+end
+
+Service Worker -> Storage: {fas-spinner} Poll storage for the current week's latest time sheet data
+
+_: **2. Daily reminder**
+
+if: If there are unsaved time cards
+	Notifications -> User: {fas-volume} Enable alerts
+else: Otherwise
+	Notifications -x User: {fas-volume-slash} Disable alerts
+end
+
+if: If there is unsaved time for any day previous to, or including, the current day
+	Notifications -x User: {fas-volume} Enable alerts
+ else: Otherwise
+ 	Notifications -x User: {fas-volume-slash} Disable alerts
+end
+
+_: **3. End of week reminder**
+
+if: If one or more of your time cards is not submitted, if there are no time cards, or any days of the week have no hours
+	Notifications -> User: Enable alerts
+else: Otherwise
+	Notifications -x User: {fas-volume-slash} Disable alerts
+end
+
+note Notification, User: Sounds are played in an chrome _**offscreen**_ page
+note Notification, User: Gifs are parsed and animated into the chrome extension icon

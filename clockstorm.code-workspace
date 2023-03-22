@@ -1,0 +1,55 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Workspace Root"
+    },
+    {
+      "path": "extension",
+      "name": "Extension Workspace"
+    },
+    {
+      "path": "website",
+      "name": "Website Workspace"
+    },
+    {
+      "path": ".github",
+      "name": "Github Workspace"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+    "editor.snippetSuggestions": "bottom",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescript][javascript]": {
+      "editor.tabSize": 2
+    },
+    "emmet.showSuggestionsAsSnippets": true,
+    "cSpell.words": [],
+    "typescript.tsdk": "./extension/node_modules/typescript/lib",
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true
+    },
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/*/**": true,
+      "**/dist/**": true,
+      "**/build/**": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "streetsidesoftware.code-spell-checker",
+      "snyk-security.snyk-vulnerability-scanner"
+    ]
+  }
+}

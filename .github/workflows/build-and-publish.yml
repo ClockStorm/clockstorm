@@ -1,0 +1,135 @@
+name: Build & Publish
+
+on:
+  push:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      commit-hash: ${{ github.sha }}
+  publish-documentation:
+    name: Publish Documentation
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: build/
+      - name: Checkout Wiki
+        uses: actions/checkout@v3
+        with:
+          repository: ${{github.repository}}.wiki
+          ref: 'master'
+          token: '${{ secrets.SERVICE_PAT }}'
+          path: 'wiki'
+      - name: Remove Existing Wiki Contents
+        working-directory: wiki
+        run: |
+          git rm -rf .
+          git clean -fxd
+      - name: Copy Documentation Folder to Wiki
+        run: cp -R build/documentation/dist/* wiki/
+      - name: Stage Wiki
+        working-directory: wiki
+        run: git add -A
+      - name: Commit Wiki
+        working-directory: wiki
+        run: |
+          git config --global user.email "clockstormapp@gmail.com"
+          git config --global user.name "Clock Storm Service Account"
+          git commit -m "Wiki for $GITHUB_SHA"
+      - name: Push Wiki
+        working-directory: wiki
+        run: git push origin master
+  publish-extension:
+    name: Publish Extension
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: build/
+      - name: Obtain Tag
+        working-directory: build/extension/dist
+        run: |
+          CLOCKSTORM_TAG=$(cat tag.txt)
+          echo "CLOCKSTORM_TAG=$CLOCKSTORM_TAG" >> $GITHUB_ENV
+      - name: Upload ZIP as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: published-extension
+          path: 'build/extension/clockstorm-${{ env.CLOCKSTORM_TAG }}.zip'
+          retention-days: 90
+          if-no-files-found: error
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: 'See the commit hash for information.'
+          token: ${{ secrets.SERVICE_PAT }}
+          tag_name: '${{ env.CLOCKSTORM_TAG }}'
+          target_commitish: '${{ github.sha }}'
+          name: '${{ env.CLOCKSTORM_TAG }}'
+          files: 'build/extension/clockstorm-${{ env.CLOCKSTORM_TAG }}.zip'
+        env:
+          GITHUB_REPOSITORY: clockstorm/clockstorm
+  publish-website:
+    name: Publish Website
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: build/
+      - name: Checkout GH Pages
+        uses: actions/checkout@v3
+        with:
+          ref: 'gh-pages'
+          token: '${{ secrets.SERVICE_PAT }}'
+          path: 'gh-pages'
+      - name: Remove Existing Docs Directory
+        working-directory: gh-pages
+        run: rm -rf docs
+      - name: Create Docs Directory
+        working-directory: gh-pages
+        run: mkdir -p docs
+      - name: Create CNAME File
+        working-directory: gh-pages
+        run: echo 'www.clockstorm.com' > docs/CNAME
+      - name: Copy Distribution Folder to Docs
+        run: cp -R build/website/dist/* gh-pages/docs/
+      - name: Obtain Tag
+        working-directory: build/extension/dist
+        run: |
+          CLOCKSTORM_TAG=$(cat tag.txt)
+          echo "CLOCKSTORM_TAG=$CLOCKSTORM_TAG" >> $GITHUB_ENV
+      - name: Copy Published Extension Artifact to Docs
+        run: |
+          cp "build/extension/clockstorm-${{ env.CLOCKSTORM_TAG }}.zip" gh-pages/docs/clockstorm.zip
+      - name: Stage Pages
+        working-directory: gh-pages/docs
+        run: git add -A
+      - name: Commit Pages
+        working-directory: gh-pages
+        run: |
+          git config --global user.email "clockstormapp@gmail.com"
+          git config --global user.name "Clock Storm Service Account"
+          git commit -m "Pages for $GITHUB_SHA"
+      - name: Push Pages
+        working-directory: gh-pages
+        run: git push origin gh-pages

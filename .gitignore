@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+extension/dist/
+documentation/dist/
+website/dist/
+.idea/
+extension/coverage/

@@ -1,0 +1,77 @@
+name: Build & Test
+
+on:
+  workflow_call:
+    inputs:
+      commit-hash:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: 'repo'
+          ref: '${{ inputs.commit-hash }}'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install LCOV
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install lcov
+      - name: Install Website Dependencies
+        working-directory: repo/website
+        run: npm ci
+      - name: Install Documentation Dependencies
+        working-directory: repo/documentation
+        run: npm ci
+      - name: Install Extension Dependencies
+        working-directory: repo/extension
+        run: npm ci
+      - name: Lint Website Source
+        working-directory: repo/website
+        run: npm run lint
+      - name: Build Website
+        working-directory: repo/website
+        run: npm run build
+        env:
+          CLOCKSTORM_COMMIT_HASH: ${{ inputs.commit-hash }}
+      - name: Build Documentation
+        working-directory: repo/documentation
+        run: npm run build "${{ inputs.commit-hash }}" "https://github.com/clockstorm/clockstorm/wiki" "https://github.com/clockstorm/clockstorm" "https://github.com/clockstorm/clockstorm/blob/main"
+      - name: Lint Extension Source
+        working-directory: repo/extension
+        run: npm run lint
+      - name: Test Extension
+        working-directory: repo/extension
+        run: npm run test
+      - name: Code Coverage Requirement
+        uses: zgosalvez/github-actions-report-lcov@v3
+        with:
+          working-directory: repo/extension
+          coverage-files: repo/extension/coverage/lcov.info
+          minimum-coverage: 90
+      - name: Build Extension
+        working-directory: repo/extension
+        run: npm run build ${{ inputs.commit-hash }}
+      - name: ZIP Extension
+        working-directory: repo/extension
+        run: |
+          CLOCKSTORM_TAG=$(cat dist/tag.txt)
+          npm run package "clockstorm-$CLOCKSTORM_TAG.zip"
+      - name: Create Build Output Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          retention-days: 5
+          if-no-files-found: error
+          path: |
+            repo/documentation/dist/
+            repo/extension/dist/
+            repo/website/dist/
+            repo/extension/clockstorm-*.zip

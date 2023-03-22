@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Extension Settings</title>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="extension-options.css" />
+  </head>
+  <body>
+    <form id="options">
+      <label class="row">
+        <p>End of week reminders</p>
+
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="end-of-week-timesheet-reminder" />
+          <label for="end-of-week-timesheet-reminder" class="toggle"><span></span></label>
+        </div>
+      </label>
+
+      <label class="row">
+        <p>Daily reminders</p>
+
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="daily-time-entry-reminder" />
+          <label for="daily-time-entry-reminder" class="toggle"><span></span></label>
+        </div>
+      </label>
+
+      <p>Reminder icon</p>
+      <div id="gif-selector"></div>
+
+      <p>Reminder sound</p>
+      <div id="sound-selector"></div>
+
+      <div id="buttons">
+        <input id="save" type="submit" value="Save" />
+      </div>
+
+      <p id="version"></p>
+    </form>
+    <script src="version.js"></script>
+    <script src="extension-options.js"></script>
+  </body>
+</html>
