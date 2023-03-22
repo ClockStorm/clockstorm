@@ -100,21 +100,76 @@ interface PresetDetailSingle {
 }
 
 const createGifPresets = (extensionOptions: ExtensionOptions) => {
-  const presetGifsCount = 16
-
   const presetGifDetails: PresetDetailSingle[] = [
     {
       url: 'gifs/clockstorm.gif',
       title: 'Clock Storm',
     },
+    {
+      url: 'gifs/rainbow-ball.gif',
+      title: 'Rainbow Ball',
+    },
+    {
+      url: 'gifs/three-circles.gif',
+      title: 'Three Circles',
+    },
+    {
+      url: 'gifs/spiral.gif',
+      title: 'Spiral',
+    },
+    {
+      url: 'gifs/biohazard.gif',
+      title: 'Biohazard',
+    },
+    {
+      url: 'gifs/swirl.gif',
+      title: 'Swirl',
+    },
+    {
+      url: 'gifs/flames.gif',
+      title: 'Flames',
+    },
+    {
+      url: 'gifs/circle.gif',
+      title: 'Circle',
+    },
+    {
+      url: 'gifs/spinner.gif',
+      title: 'Spinner',
+    },
+    {
+      url: 'gifs/webs.gif',
+      title: 'Webs',
+    },
+    {
+      url: 'gifs/disco.gif',
+      title: 'Disco',
+    },
+    {
+      url: 'gifs/infinity.gif',
+      title: 'Infinity',
+    },
+    {
+      url: 'gifs/snake.gif',
+      title: 'Snake',
+    },
+    {
+      url: 'gifs/grid.gif',
+      title: 'Grid',
+    },
+    {
+      url: 'gifs/bird.gif',
+      title: 'Bird',
+    },
+    {
+      url: 'gifs/water.gif',
+      title: 'Water',
+    },
+    {
+      url: 'gifs/orb.gif',
+      title: 'Orb',
+    },
   ]
-
-  for (let presetGifNumber = 1; presetGifNumber <= presetGifsCount; presetGifNumber++) {
-    presetGifDetails.push({
-      url: `gifs/preset-${presetGifNumber}.gif`,
-      title: `Preset ${presetGifNumber}`,
-    })
-  }
 
   for (const presetGifDetailsSingle of presetGifDetails) {
     createSingleGif(
