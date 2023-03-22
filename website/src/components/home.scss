@@ -1,14 +1,30 @@
-#download {
+#links {
   margin-top: 20px;
-}
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 
-#download a {
-  padding: 20px;
-  background-color: rgb(75, 12, 245);
-  color: white;
-  border-radius: 5px;
-  font-size: 20px;
-  font-weight: bold;
-  text-decoration: none;
-  display: inline-block;
+  a.download {
+    padding: 20px;
+    background-color: rgb(75, 12, 245);
+    color: white;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 20px;
+  }
+
+  a.user-guide {
+    padding: 10px;
+    background-color: #bebebe;
+    color: black;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+  }
 }

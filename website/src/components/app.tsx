@@ -1,4 +1,4 @@
-import { DownloadPage } from '@src/pages/download'
+import { GuidePage } from '@src/pages/guide'
 import { HomePage } from '@src/pages/home'
 import { PrivacyPage } from '@src/pages/privacy'
 import React from 'react'
@@ -18,7 +18,7 @@ const Application: React.FC = () => {
         </header>
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route path='/download' component={DownloadPage} />
+          <Route path='/guide' component={GuidePage} />
           <Route path='/privacy' component={PrivacyPage} />
         </Switch>
         <footer>
