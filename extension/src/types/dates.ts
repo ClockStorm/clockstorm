@@ -117,3 +117,9 @@ export const getAllDaysPriorInWeek = (
     return !(onlyBusinessDays && !isBusinessDayOfWeek(singleDayOfWeek))
   })
 }
+
+export const getLastDayOfMonth = (month: number, year: number) => {
+  const date = new Date(year, month - 1, 1)
+  date.setMonth(date.getMonth() + 1, 0)
+  return date.getDate()
+}

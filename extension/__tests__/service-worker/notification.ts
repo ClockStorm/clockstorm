@@ -1,8 +1,8 @@
 import { describe, expect, jest, test } from '@jest/globals'
-import { TimeSheetDates } from '../../src/types/time-sheet'
-import { shouldNotifyUser } from '../../src/service-worker/notifications'
 import { getExtensionOptions } from '../../src/extension-options/storage'
+import { shouldNotifyUser } from '../../src/service-worker/notifications'
 import { getTimeSheet } from '../../src/time-sheets/storage'
+import { TimeSheetDates } from '../../src/types/time-sheet'
 
 const dates: TimeSheetDates = {
   monday: {
@@ -58,6 +58,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: true,
       dailyTimeEntryReminder: false,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -90,6 +91,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: false,
       dailyTimeEntryReminder: false,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -122,6 +124,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: false,
       dailyTimeEntryReminder: true,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -154,6 +157,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: false,
       dailyTimeEntryReminder: true,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -186,6 +190,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: true,
       dailyTimeEntryReminder: true,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -218,6 +223,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: true,
       dailyTimeEntryReminder: true,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -262,6 +268,7 @@ describe('shouldNotifyUser', () => {
     getExtensionOptionsMock.mockResolvedValue({
       endOfWeekTimesheetReminder: true,
       dailyTimeEntryReminder: true,
+      endOfMonthTimesheetReminder: false,
       gifDataUrl: '',
       soundDataUrl: '',
     })
@@ -300,5 +307,74 @@ describe('shouldNotifyUser', () => {
 
     const actual = await shouldNotifyUser()
     expect(actual).toEqual(false)
+  })
+
+  test('when the last day of the month is in the middle of the week', async () => {
+    getExtensionOptionsMock.mockResolvedValue({
+      endOfWeekTimesheetReminder: false,
+      dailyTimeEntryReminder: false,
+      endOfMonthTimesheetReminder: true,
+      gifDataUrl: '',
+      soundDataUrl: '',
+    })
+
+    getTimeSheetMock.mockResolvedValue({
+      dates: {
+        monday: {
+          year: 2023,
+          month: 5,
+          day: 29,
+        },
+        tuesday: {
+          year: 2023,
+          month: 5,
+          day: 30,
+        },
+        wednesday: {
+          year: 2023,
+          month: 5,
+          day: 31,
+        },
+        thursday: {
+          year: 2023,
+          month: 6,
+          day: 1,
+        },
+        friday: {
+          year: 2023,
+          month: 6,
+          day: 2,
+        },
+        saturday: {
+          year: 2023,
+          month: 6,
+          day: 3,
+        },
+        sunday: {
+          year: 2023,
+          month: 6,
+          day: 4,
+        },
+      },
+      timeCards: [
+        {
+          status: 'saved',
+          hours: {
+            monday: 8,
+            tuesday: 8,
+            wednesday: 8,
+            thursday: 0,
+            friday: 0,
+            saturday: 0,
+            sunday: 0,
+          },
+        },
+      ],
+    })
+
+    jest.useFakeTimers().setSystemTime(new Date(2023, 5, 31, 0, 0, 0))
+
+    const actual = await shouldNotifyUser()
+    expect(actual).toEqual(true)
   })
 })
