@@ -1,7 +1,7 @@
 {
   "name": "Clock Storm",
   "version": "1.0.0",
-  "description": "A tool that sends reminders to users about filling out their time cards on schedule, with customizable notifications including GIFs and sounds.",
+  "description": "A tool that reminds users about filling out their time cards on schedule, with customizable GIFs and sounds.",
   "permissions": ["storage", "unlimitedStorage", "offscreen"],
   "background": {
     "service_worker": "service-worker.js"
