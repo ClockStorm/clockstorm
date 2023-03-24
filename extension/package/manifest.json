@@ -2,7 +2,7 @@
   "name": "Clock Storm",
   "version": "1.0.0",
   "description": "Helping people fill their timecards out",
-  "permissions": ["declarativeContent", "storage", "unlimitedStorage", "offscreen"],
+  "permissions": ["storage", "unlimitedStorage", "offscreen"],
   "background": {
     "service_worker": "service-worker.js"
   },
