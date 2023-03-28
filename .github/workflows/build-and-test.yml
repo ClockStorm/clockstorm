@@ -58,7 +58,9 @@ jobs:
           minimum-coverage: 90
       - name: Build Extension
         working-directory: repo/extension
-        run: npm run build ${{ inputs.commit-hash }}
+        run: npm run build
+        env:
+          CLOCKSTORM_COMMIT_HASH: ${{ inputs.commit-hash }}
       - name: ZIP Extension
         working-directory: repo/extension
         run: |

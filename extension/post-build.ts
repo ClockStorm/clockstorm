@@ -1,9 +1,8 @@
-import * as esbuild from 'esbuild'
-import * as fs from 'fs'
-import * as path from 'path'
+const esbuild = require('esbuild')
+const fs = require('fs')
+const path = require('path')
 
-const args = process.argv.slice(2)
-const commitHash = args[0] || 'dev'
+const commitHash = process.env.CLOCKSTORM_COMMIT_HASH || 'dev'
 
 const manifest = fs.readFileSync('package/manifest.json', 'utf8')
 const manifestObj = JSON.parse(manifest)
@@ -24,17 +23,10 @@ const getAllFilesInDirectory = (directory: string): string[] => {
 }
 
 const build = async () => {
-  fs.rmSync('dist', { recursive: true, force: true })
   fs.mkdirSync('dist', { recursive: true })
 
   await esbuild.build({
-    entryPoints: [
-      'src/content-script.ts',
-      'src/service-worker.ts',
-      'src/extension-options.ts',
-      'src/offscreen.ts',
-      'src/popup.ts',
-    ],
+    entryPoints: ['src/content-script.ts', 'src/service-worker.ts'],
     bundle: true,
     minify: true,
     keepNames: true,
