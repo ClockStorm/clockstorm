@@ -1,0 +1,53 @@
+@import '../reset.scss';
+
+body {
+  width: 400px;
+  margin: 8px;
+  line-height: 2em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+span {
+  font-family: Roboto, system-ui, sans-serif;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 14px;
+}
+.timecard-dynamic-value {
+  color: red;
+}
+
+#summary {
+  line-height: 1.2em;
+  display: none;
+}
+
+.clockstorm-popup-flex-container {
+  display: flex;
+  align-items: center;
+}
+
+.clockstorm-popup-flex-container .clockstorm-logo-container {
+  display: inline-flex;
+  flex: 0.5;
+  flex-direction: column;
+  align-items: center;
+}
+
+.clockstorm-popup-flex-container .clockstorm-timesheet-summary {
+  flex: 3;
+}
+
+.clockstorm-popup-flex-container .clockstorm-logo-container .status {
+  font-size: 32px;
+  color: green;
+}

@@ -2,6 +2,10 @@
 
 ## [1.1.0] - TBD
 
+### Added
+
+- Status indicator on the popup page.
+
 ## [1.0.0] - 2023-03-28
 
 ### Added

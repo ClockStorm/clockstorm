@@ -1,4 +1,4 @@
-import { Message, PlayAudioMessage, StopAudioMessage } from './types/offscreen'
+import { Message, PlayAudioMessage, StopAudioMessage } from '../types/offscreen'
 
 chrome.runtime.onMessage.addListener(async (rawMessage: any) => {
   const message = Message.parse(rawMessage)

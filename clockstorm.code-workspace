@@ -13,6 +13,10 @@
       "name": "Website Workspace"
     },
     {
+      "path": "documentation",
+      "name": "Documentation Workspace"
+    },
+    {
       "path": ".github",
       "name": "Github Workspace"
     }
