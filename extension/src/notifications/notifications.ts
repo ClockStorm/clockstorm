@@ -10,7 +10,9 @@ import {
   getTodayDateOnly,
 } from '../types/dates'
 
-export const shouldNotifyUser = async (): Promise<boolean> => {
+export type NotificationType = 'daily' | 'weekly' | 'monthly'
+
+export const getActiveNotificationTypes = async (): Promise<NotificationType[]> => {
   const today = getTodayDateOnly()
   const dayOfWeek = getDayOfWeek(today)
   const monday = getMondayOfDateOnly(today)
@@ -22,25 +24,32 @@ export const shouldNotifyUser = async (): Promise<boolean> => {
   const dueDayOfWeek: DayOfWeek = 'thursday'
   const dueDayOfWeekIndex = dayOfWeekIndexes[dueDayOfWeek]
 
+  const results: NotificationType[] = []
+
   for (const dayPrior of daysPrior) {
     if (
       (extensionOptions.dailyTimeEntryReminder && !summary.daysFilled[dayPrior]) ||
       summary.weekStatus === 'some-unsaved'
     ) {
-      return true
+      results.push('daily')
+      break
     }
+  }
+
+  if (
+    extensionOptions.endOfWeekTimesheetReminder &&
+    dayOfWeekIndex >= dueDayOfWeekIndex &&
+    summary.weekStatus !== 'all-submitted-or-approved'
+  ) {
+    results.push('weekly')
   }
 
   if (summary.alertableLastDayOfMonth && extensionOptions.endOfMonthTimesheetReminder) {
     const alertableLastDayOfMonthIndex = dayOfWeekIndexes[summary.alertableLastDayOfMonth]
     if (dayOfWeekIndex >= alertableLastDayOfMonthIndex && summary.weekStatus !== 'all-submitted-or-approved') {
-      return true
+      results.push('monthly')
     }
   }
 
-  return (
-    extensionOptions.endOfWeekTimesheetReminder &&
-    dayOfWeekIndex >= dueDayOfWeekIndex &&
-    summary.weekStatus !== 'all-submitted-or-approved'
-  )
+  return results
 }

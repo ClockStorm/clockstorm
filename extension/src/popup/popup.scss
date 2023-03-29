@@ -14,40 +14,96 @@ h5,
 h6,
 p,
 label,
-span {
+span,
+li {
   font-family: Roboto, system-ui, sans-serif;
 }
 
-h2 {
-  font-weight: bold;
+#summary,
+#active-notifications {
+  line-height: 1.5em;
   font-size: 14px;
-}
-.timecard-dynamic-value {
-  color: red;
+
+  h2 {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .timecard-dynamic-value {
+    color: red;
+    font-weight: bold;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .left {
+      font-size: 0;
+      line-height: 0;
+      margin-right: 20px;
+    }
+
+    .right {
+      flex: 1;
+    }
+  }
 }
 
-#summary {
-  line-height: 1.2em;
+.hidden {
   display: none;
 }
 
-.clockstorm-popup-flex-container {
-  display: flex;
-  align-items: center;
+#active-notifications {
+  margin-top: 10px;
+
+  .status {
+    font-size: 32px;
+    color: red;
+  }
+
+  p {
+    font-size: 11px;
+    color: #4b0cf5;
+  }
+
+  ul {
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1.3em;
+    color: red;
+  }
 }
 
-.clockstorm-popup-flex-container .clockstorm-logo-container {
-  display: inline-flex;
-  flex: 0.5;
-  flex-direction: column;
-  align-items: center;
+#links {
+  text-align: center;
+  margin-top: 10px;
+
+  p {
+    display: inline-block;
+    margin-right: 10px;
+
+    a,
+    a:visited,
+    a:active,
+    a:hover {
+      font-weight: bold;
+      font-size: 28px;
+      color: black;
+      text-decoration: none;
+    }
+  }
 }
 
-.clockstorm-popup-flex-container .clockstorm-timesheet-summary {
-  flex: 3;
-}
+#loading {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
-.clockstorm-popup-flex-container .clockstorm-logo-container .status {
-  font-size: 32px;
-  color: green;
+  i {
+    font-size: 28px;
+    color: black;
+  }
 }

@@ -2,10 +2,10 @@ import { animatedIcon } from './background-tasks/animated-icon'
 import { executeBackgroundTask } from './background-tasks/background-task'
 import { getExtensionOptions } from './extension-options/storage'
 import { GIFStream, parseGIF } from './gifs/gifs'
+import { getActiveNotificationTypes } from './notifications/notifications'
 import { playAudio, stopAudio } from './offscreen/offscreen'
-import { shouldNotifyUser } from './service-worker/notifications'
 import { GIF } from './types/gifs'
-import { doWhile, forever, waitFor } from './utils/utils'
+import { waitFor } from './utils/utils'
 
 let running = false
 
@@ -24,8 +24,12 @@ const main = async () => {
   let lastSoundDataUrl: string | null = null
   let soundPlayingId = 0
 
-  await doWhile(async () => {
-    const shouldNotify = await shouldNotifyUser()
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    await waitFor(50)
+
+    const activeNotificationTypes = await getActiveNotificationTypes()
+    const shouldNotify = activeNotificationTypes.length > 0
 
     const cancelSound = async () => {
       if (soundPlayingId) {
@@ -57,7 +61,7 @@ const main = async () => {
     if (!shouldNotify) {
       await cancelSound()
       await cancelGif()
-      return
+      continue
     }
 
     if (newGifLoaded) {
@@ -82,7 +86,7 @@ const main = async () => {
         soundPlayingId = await playAudio(extensionOptions.soundDataUrl, 1)
       }
     }
-  }, forever, () => waitFor(50))
+  }
 }
 
 main()
