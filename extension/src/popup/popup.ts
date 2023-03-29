@@ -5,7 +5,7 @@ import { getActiveNotificationTypes } from '../notifications/notifications'
 import { getTimeSheet } from '../time-sheets/storage'
 import { summarizeTimeSheet } from '../time-sheets/summary'
 import { getMondayOfDateOnly, getTodayDateOnly } from '../types/dates'
-import { waitFor } from '../utils/utils'
+import { doWhile, forever, waitFor } from '../utils/utils'
 import './popup.scss'
 
 const main = async () => {
@@ -23,8 +23,7 @@ const main = async () => {
     chrome.runtime.openOptionsPage()
   })
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
+  await doWhile(async () => {
     const today = getTodayDateOnly()
     const monday = getMondayOfDateOnly(today)
     const timeSheet = await getTimeSheet(monday)
@@ -67,8 +66,7 @@ const main = async () => {
     summaryElement.classList.remove('hidden')
     loadingElement.classList.add('hidden')
 
-    await waitFor(1000)
-  }
+  }, forever, () => waitFor(1000))
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

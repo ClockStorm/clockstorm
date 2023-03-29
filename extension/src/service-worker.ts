@@ -5,7 +5,7 @@ import { GIFStream, parseGIF } from './gifs/gifs'
 import { getActiveNotificationTypes } from './notifications/notifications'
 import { playAudio, stopAudio } from './offscreen/offscreen'
 import { GIF } from './types/gifs'
-import { waitFor } from './utils/utils'
+import { doWhile, forever, waitFor } from './utils/utils'
 
 let running = false
 
@@ -24,10 +24,7 @@ const main = async () => {
   let lastSoundDataUrl: string | null = null
   let soundPlayingId = 0
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    await waitFor(50)
-
+  await doWhile(async () => {
     const activeNotificationTypes = await getActiveNotificationTypes()
     const shouldNotify = activeNotificationTypes.length > 0
 
@@ -61,7 +58,7 @@ const main = async () => {
     if (!shouldNotify) {
       await cancelSound()
       await cancelGif()
-      continue
+      return
     }
 
     if (newGifLoaded) {
@@ -86,7 +83,7 @@ const main = async () => {
         soundPlayingId = await playAudio(extensionOptions.soundDataUrl, 1)
       }
     }
-  }
+  }, forever, () => waitFor(50))
 }
 
 main()
