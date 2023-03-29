@@ -1,7 +1,7 @@
 import { getTimeSheet } from '../time-sheets/storage'
 import { summarizeTimeSheet } from '../time-sheets/summary'
 import { getMondayOfDateOnly, getTodayDateOnly } from '../types/dates'
-import { waitFor } from '../utils/utils'
+import { doWhile, forever, waitFor } from '../utils/utils'
 import './popup.scss'
 import '@fortawesome/fontawesome-free/css/fontawesome.css'
 import '@fortawesome/fontawesome-free/css/brands.css'
@@ -15,9 +15,7 @@ const main = async () => {
   const summaryElement = document.getElementById('summary') as HTMLDivElement
   const statusElement = document.querySelector('.clockstorm-popup-flex-container .status') as HTMLDivElement
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    await waitFor(1000)
+  await doWhile(async () => {
     const today = getTodayDateOnly()
     const monday = getMondayOfDateOnly(today)
     const timeSheet = await getTimeSheet(monday)
@@ -39,7 +37,7 @@ const main = async () => {
 
     summaryElement.style.display = 'block'
     loadingElement.style.display = 'none'
-  }
+  }, forever, () => waitFor(1000));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

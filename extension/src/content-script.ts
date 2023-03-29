@@ -2,21 +2,13 @@ import { DataSource } from './data-sources/data-source'
 import { lightning } from './data-sources/lightning'
 import { toDateOnlyKey } from './types/dates'
 import { isTimeSheetEqual, TimeSheet } from './types/time-sheet'
-import { waitFor } from './utils/utils'
+import { doWhile, forever, waitFor } from './utils/utils'
 
 const main = async () => {
   let lastTimeSheetUpdate: TimeSheet | null = null
   const dataSources: DataSource[] = [lightning]
-  let isFirstIteration = true
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    if (!isFirstIteration) {
-      await waitFor(5000)
-    }
-
-    isFirstIteration = false
-
+  await doWhile(async () => {
     // If we are on the Clock Storm website, add a class to the body element to indicate that the extension is active.
     const clockStormBody = document.querySelector('body[data-clockstorm]')
 
@@ -45,7 +37,7 @@ const main = async () => {
       data[`timesheet-${toDateOnlyKey(timeSheet.dates.monday)}`] = timeSheet
       await chrome.storage.local.set(data)
     }
-  }
+  }, forever, () => waitFor(5000))
 }
 
 main()
