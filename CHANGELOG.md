@@ -5,6 +5,8 @@
 ### Added
 
 - Status indicator on the popup page.
+- Buttons on the popup page to navigate to settings, user guide, GitHub, bug report, feature request and Discord.
+- Active notifications list on the popup page.
 
 ## [1.0.0] - 2023-03-28
 

@@ -2,8 +2,8 @@ import { animatedIcon } from './background-tasks/animated-icon'
 import { executeBackgroundTask } from './background-tasks/background-task'
 import { getExtensionOptions } from './extension-options/storage'
 import { GIFStream, parseGIF } from './gifs/gifs'
+import { getActiveNotificationTypes } from './notifications/notifications'
 import { playAudio, stopAudio } from './offscreen/offscreen'
-import { shouldNotifyUser } from './service-worker/notifications'
 import { GIF } from './types/gifs'
 import { waitFor } from './utils/utils'
 
@@ -28,7 +28,8 @@ const main = async () => {
   while (true) {
     await waitFor(50)
 
-    const shouldNotify = await shouldNotifyUser()
+    const activeNotificationTypes = await getActiveNotificationTypes()
+    const shouldNotify = activeNotificationTypes.length > 0
 
     const cancelSound = async () => {
       if (soundPlayingId) {

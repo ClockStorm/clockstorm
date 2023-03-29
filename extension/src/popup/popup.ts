@@ -1,11 +1,12 @@
+import '@fortawesome/fontawesome-free/scss/brands.scss'
+import '@fortawesome/fontawesome-free/scss/fontawesome.scss'
+import '@fortawesome/fontawesome-free/scss/solid.scss'
+import { getActiveNotificationTypes } from '../notifications/notifications'
 import { getTimeSheet } from '../time-sheets/storage'
 import { summarizeTimeSheet } from '../time-sheets/summary'
 import { getMondayOfDateOnly, getTodayDateOnly } from '../types/dates'
 import { waitFor } from '../utils/utils'
 import './popup.scss'
-import '@fortawesome/fontawesome-free/css/fontawesome.css'
-import '@fortawesome/fontawesome-free/css/brands.css'
-import '@fortawesome/fontawesome-free/css/solid.css'
 
 const main = async () => {
   const daysSubmittedElement = document.getElementById('timecard-days-submitted') as HTMLSpanElement
@@ -13,11 +14,17 @@ const main = async () => {
   const timeLeftElement = document.getElementById('timecard-time-left') as HTMLSpanElement
   const loadingElement = document.getElementById('loading') as HTMLDivElement
   const summaryElement = document.getElementById('summary') as HTMLDivElement
-  const statusElement = document.querySelector('.clockstorm-popup-flex-container .status') as HTMLDivElement
+  const activeNotificationsElement = document.getElementById('active-notifications') as HTMLParagraphElement
+  const activeNotificationsListElement = document.querySelector('#active-notifications ul') as HTMLUListElement
+  const settingsLinkElement = document.getElementById('settings-link') as HTMLAnchorElement
+
+  settingsLinkElement.addEventListener('click', (e) => {
+    e.preventDefault()
+    chrome.runtime.openOptionsPage()
+  })
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    await waitFor(1000)
     const today = getTodayDateOnly()
     const monday = getMondayOfDateOnly(today)
     const timeSheet = await getTimeSheet(monday)
@@ -27,18 +34,40 @@ const main = async () => {
     daysSavedElement.innerHTML = summary.totalDaysSaved.toString(10)
     timeLeftElement.innerHTML = summary.timeRemaining
 
-    if (summary.totalDaysSubmitted !== 5 && summary.timeRemaining !== '00:00:00') {
-      statusElement.classList.remove('fa-check')
-      statusElement.classList.add('fa-triangle-exclamation')
-      statusElement.style.color = 'red'
+    const activeNotificationTypes = await getActiveNotificationTypes()
+
+    if (activeNotificationTypes.length > 0) {
+      activeNotificationsElement.classList.remove('hidden')
     } else {
-      statusElement.classList.remove('fa-triangle-exclamation')
-      statusElement.classList.add('fa-check')
-      statusElement.style.color = 'green'
+      activeNotificationsElement.classList.add('hidden')
     }
 
-    summaryElement.style.display = 'block'
-    loadingElement.style.display = 'none'
+    const activeNotificationsListTextPieces = activeNotificationTypes
+      .map((type) => {
+        switch (type) {
+          case 'daily':
+            return 'Daily reminder'
+          case 'weekly':
+            return 'End of week reminder'
+          case 'monthly':
+            return 'End of month reminder'
+          default:
+            return null
+        }
+      })
+      .filter((text) => text !== null)
+
+    activeNotificationsListElement.innerHTML = ''
+    for (const textPiece of activeNotificationsListTextPieces) {
+      const listItemElement = document.createElement('li')
+      listItemElement.innerText = textPiece
+      activeNotificationsListElement.appendChild(listItemElement)
+    }
+
+    summaryElement.classList.remove('hidden')
+    loadingElement.classList.add('hidden')
+
+    await waitFor(1000)
   }
 }
 
