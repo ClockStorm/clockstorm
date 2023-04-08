@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js",
+    "build": "NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js",
     "postbuild": "ts-node post-build.ts",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
     "package": "ts-node package.ts",
@@ -19,7 +19,6 @@
     "@typescript-eslint/eslint-plugin": "5.54.1",
     "@typescript-eslint/parser": "5.54.1",
     "archiver": "5.3.1",
-    "cross-env": "7.0.3",
     "css-loader": "6.7.3",
     "esbuild": "0.17.11",
     "eslint": "8.36.0",

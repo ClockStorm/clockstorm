@@ -1,4 +1,4 @@
-import { DataSource } from './data-sources/data-source'
+import { DataSource } from './types/data-source'
 import { lightning } from './data-sources/lightning'
 import { toDateOnlyKey } from './types/dates'
 import { isTimeSheetEqual, TimeSheet } from './types/time-sheet'
