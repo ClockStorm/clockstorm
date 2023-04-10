@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, jest, test } from '@jest/globals'
 import { summarizeTimeSheet } from '../../src/time-sheets/summary'
+import { ExtensionOptions } from '../../src/types/extension-options'
 import { TimeSheet, TimeSheetDates, TimeSheetSummary } from '../../src/types/time-sheet'
 
 const dates: TimeSheetDates = {
@@ -40,7 +41,7 @@ const dates: TimeSheetDates = {
   },
 }
 
-const endOfWeekDates: TimeSheetDates = {
+const endOfMonthDates: TimeSheetDates = {
   monday: {
     year: 2023,
     month: 5,
@@ -78,6 +79,36 @@ const endOfWeekDates: TimeSheetDates = {
   },
 }
 
+const defaultExtensionOptions: ExtensionOptions = {
+  dailyTimeEntryReminder: true,
+  endOfMonthTimesheetReminder: true,
+  endOfWeekTimesheetReminder: true,
+  gifDataUrl: 'gifs/clockstorm.gif',
+  soundDataUrl: 'sounds/cricket.wav',
+  dailyReminderDaysOfWeek: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+  dailyReminderStartTime: {
+    hour: 9,
+    minute: 0,
+  },
+  endOfWeekReminderDayOfWeek: 'thursday',
+  endOfWeekReminderStartTime: {
+    hour: 9,
+    minute: 0,
+  },
+  endOfWeekReminderDueTime: {
+    hour: 17,
+    minute: 0,
+  },
+  endOfMonthReminderStartTime: {
+    hour: 9,
+    minute: 0,
+  },
+  endOfMonthReminderDueTime: {
+    hour: 17,
+    minute: 0,
+  },
+}
+
 describe('summarizeTimeSheet', () => {
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 2, 19, 0, 0, 0))
@@ -103,10 +134,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'no-time-cards',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(emptyTimeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(emptyTimeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when all days are filled out but not submitted', () => {
@@ -142,10 +173,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsubmitted',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when there are two time cards and both are submitted', () => {
@@ -193,10 +224,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 5,
       timeRemaining: '00:00:00',
       weekStatus: 'all-submitted-or-approved',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when there are two time cards and one is submitted', () => {
@@ -244,10 +275,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 2,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsubmitted',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when there are two time cards and one includes the weekend', () => {
@@ -295,10 +326,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 2,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsubmitted',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when you have a time card that is not saved', () => {
@@ -334,10 +365,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsaved',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when you have 25 hours left', () => {
@@ -375,10 +406,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '25:00:00',
       weekStatus: 'some-unsaved',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when you have 1 second left', () => {
@@ -416,10 +447,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:01',
       weekStatus: 'some-unsaved',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when you have no time left', () => {
@@ -457,10 +488,10 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'some-unsaved',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
   test('when your time card is approved', () => {
@@ -496,17 +527,17 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 5,
       timeRemaining: '00:00:00',
       weekStatus: 'all-submitted-or-approved',
-      alertableLastDayOfMonth: null,
+      endOfMonthReminderDate: null,
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
-  test('when the end of the week is wednesday', () => {
+  test('when the end of the month is wednesday', () => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 4, 31, 0, 0, 0))
 
     const timeSheet: TimeSheet = {
-      dates: endOfWeekDates,
+      dates: endOfMonthDates,
       timeCards: [],
     }
 
@@ -524,17 +555,21 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '17:00:00',
       weekStatus: 'no-time-cards',
-      alertableLastDayOfMonth: 'wednesday',
+      endOfMonthReminderDate: {
+        day: 31,
+        month: 5,
+        year: 2023,
+      },
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
-  test('when the end of the week is wednesday + buzzer beater', () => {
+  test('when the end of the month is wednesday + buzzer beater', () => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 4, 31, 17, 0, 0))
 
     const timeSheet: TimeSheet = {
-      dates: endOfWeekDates,
+      dates: endOfMonthDates,
       timeCards: [],
     }
 
@@ -552,17 +587,21 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '00:00:00',
       weekStatus: 'no-time-cards',
-      alertableLastDayOfMonth: 'wednesday',
+      endOfMonthReminderDate: {
+        day: 31,
+        month: 5,
+        year: 2023,
+      },
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 
-  test('when the end of the week is wednesday + buzzer beater failure', () => {
+  test('when the end of the month is wednesday + buzzer beater failure', () => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 4, 31, 17, 0, 1))
 
     const timeSheet: TimeSheet = {
-      dates: endOfWeekDates,
+      dates: endOfMonthDates,
       timeCards: [],
     }
 
@@ -580,9 +619,141 @@ describe('summarizeTimeSheet', () => {
       totalDaysSubmitted: 0,
       timeRemaining: '23:59:59',
       weekStatus: 'no-time-cards',
-      alertableLastDayOfMonth: 'wednesday',
+      endOfMonthReminderDate: {
+        day: 31,
+        month: 5,
+        year: 2023,
+      },
     }
 
-    expect(summarizeTimeSheet(timeSheet)).toEqual(expected)
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
+  })
+
+  test('when the end of the month is friday which is after the due date', () => {
+    jest.useFakeTimers().setSystemTime(new Date(2023, 3, 30, 9, 0, 0))
+
+    const timeSheet: TimeSheet = {
+      dates: {
+        monday: {
+          year: 2023,
+          month: 4,
+          day: 27,
+        },
+        tuesday: {
+          year: 2023,
+          month: 4,
+          day: 28,
+        },
+        wednesday: {
+          year: 2023,
+          month: 4,
+          day: 29,
+        },
+        thursday: {
+          year: 2023,
+          month: 4,
+          day: 30,
+        },
+        friday: {
+          year: 2023,
+          month: 4,
+          day: 31,
+        },
+        saturday: {
+          year: 2023,
+          month: 5,
+          day: 1,
+        },
+        sunday: {
+          year: 2023,
+          month: 5,
+          day: 2,
+        },
+      },
+      timeCards: [],
+    }
+
+    const expected: TimeSheetSummary = {
+      daysFilled: {
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false,
+      },
+      totalDaysSaved: 0,
+      totalDaysSubmitted: 0,
+      timeRemaining: '08:00:00',
+      weekStatus: 'no-time-cards',
+      endOfMonthReminderDate: null,
+    }
+
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
+  })
+
+  test('when the end of the month is thursday which is on the due date', () => {
+    jest.useFakeTimers().setSystemTime(new Date(2023, 7, 31, 9, 0, 0))
+
+    const timeSheet: TimeSheet = {
+      dates: {
+        monday: {
+          year: 2023,
+          month: 8,
+          day: 28,
+        },
+        tuesday: {
+          year: 2023,
+          month: 8,
+          day: 29,
+        },
+        wednesday: {
+          year: 2023,
+          month: 8,
+          day: 30,
+        },
+        thursday: {
+          year: 2023,
+          month: 8,
+          day: 31,
+        },
+        friday: {
+          year: 2023,
+          month: 9,
+          day: 1,
+        },
+        saturday: {
+          year: 2023,
+          month: 9,
+          day: 2,
+        },
+        sunday: {
+          year: 2023,
+          month: 9,
+          day: 3,
+        },
+      },
+      timeCards: [],
+    }
+
+    const expected: TimeSheetSummary = {
+      daysFilled: {
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false,
+      },
+      totalDaysSaved: 0,
+      totalDaysSubmitted: 0,
+      timeRemaining: '08:00:00',
+      weekStatus: 'no-time-cards',
+      endOfMonthReminderDate: null,
+    }
+
+    expect(summarizeTimeSheet(timeSheet, defaultExtensionOptions)).toEqual(expected)
   })
 })

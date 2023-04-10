@@ -1,9 +1,9 @@
-import { GuidePage } from '@src/pages/guide'
-import { HomePage } from '@src/pages/home'
-import { PrivacyPage } from '@src/pages/privacy'
 import React from 'react'
 import { Route } from 'react-router'
 import { HashRouter, Link, Switch } from 'react-router-dom'
+import { GuidePage } from '../pages/guide'
+import { HomePage } from '../pages/home'
+import { PrivacyPage } from '../pages/privacy'
 import './app.scss'
 
 const Application: React.FC = () => {

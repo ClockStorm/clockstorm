@@ -33,7 +33,7 @@
       "editor.tabSize": 2
     },
     "emmet.showSuggestionsAsSnippets": true,
-    "cSpell.words": [],
+    "cSpell.words": ["alertable"],
     "typescript.tsdk": "./extension/node_modules/typescript/lib",
     "files.exclude": {
       "**/.git": true,

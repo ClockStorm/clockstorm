@@ -2,7 +2,7 @@ import { animatedIcon } from './background-tasks/animated-icon'
 import { executeBackgroundTask } from './background-tasks/background-task'
 import { getExtensionOptions } from './extension-options/storage'
 import { GIFStream, parseGIF } from './gifs/gifs'
-import { getActiveNotificationTypes } from './notifications/notifications'
+import { checkShouldNotify } from './notifications/notifications'
 import { playAudio, stopAudio } from './offscreen/offscreen'
 import { GIF } from './types/gifs'
 import { waitFor } from './utils/utils'
@@ -28,9 +28,6 @@ const main = async () => {
   while (true) {
     await waitFor(50)
 
-    const activeNotificationTypes = await getActiveNotificationTypes()
-    const shouldNotify = activeNotificationTypes.length > 0
-
     const cancelSound = async () => {
       if (soundPlayingId) {
         await stopAudio(soundPlayingId)
@@ -48,6 +45,7 @@ const main = async () => {
 
     let newGifLoaded = false
     const extensionOptions = await getExtensionOptions()
+    const shouldNotify = await checkShouldNotify(extensionOptions)
 
     if (extensionOptions.gifDataUrl !== lastGifDataUrl) {
       lastGifDataUrl = extensionOptions.gifDataUrl

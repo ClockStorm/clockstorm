@@ -2,6 +2,18 @@
 
 ## [1.2.0] - TBD
 
+### Added
+
+- Support for setting daily reminder days of the week and start time for reminders.
+- Support for setting end of week reminder due date and time, as well as start time for reminders.
+- Support for setting end of week reminder due time, as well as start time for reminders.
+- Users can now browse their time sheet summary for past weeks.
+
+### Changed
+
+- Options screen is now split up into tabs: "General", "Timing", "Alert".
+- Reminders will occur for previous weeks of missing time sheet information (bounded by the installation date of the extension).
+
 ## [1.1.0] - 2023-03-29
 
 ### Added

@@ -2,7 +2,6 @@
 
 body {
   width: 400px;
-  margin: 8px;
   line-height: 2em;
 }
 
@@ -17,6 +16,10 @@ label,
 span,
 li {
   font-family: Roboto, system-ui, sans-serif;
+}
+
+#container {
+  padding: 8px;
 }
 
 #summary,
@@ -56,6 +59,71 @@ li {
   display: none;
 }
 
+#week-selector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  background-color: black;
+  padding: 8px;
+
+  #week-selector-date {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
+    position: relative;
+
+    .notification {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background-color: red;
+      border-radius: 8px;
+      width: 8px;
+      height: 8px;
+      display: none;
+    }
+
+    &.has-notification {
+      .notification {
+        display: block;
+      }
+    }
+
+    .fa-regular {
+      display: inline-block;
+    }
+
+    .fa-solid {
+      display: none;
+    }
+
+    &.disabled {
+      opacity: 0;
+      cursor: default;
+    }
+
+    &:hover {
+      .fa-regular {
+        display: none;
+      }
+
+      .fa-solid {
+        display: inline-block;
+      }
+    }
+  }
+}
 #active-notifications {
   margin-top: 10px;
 
