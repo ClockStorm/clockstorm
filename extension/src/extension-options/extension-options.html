@@ -1,42 +1,135 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>Clock Storm Settings</title>
   </head>
   <body>
     <form id="options">
-      <label class="row">
-        <p>Daily reminders</p>
+      <div id="tabs">
+        <a role="button" class="selected" data-tab="general"
+          ><i class="fa-solid fa-square-check"></i><span>General</span></a
+        >
+        <a role="button" data-tab="clock"><i class="fa-regular fa-clock"></i><span>Timing</span></a>
+        <a role="button" data-tab="alert"><i class="fa-regular fa-bell"></i><span>Alert</span></a>
+      </div>
 
-        <div class="checkbox-wrapper">
-          <input type="checkbox" id="daily-time-entry-reminder" />
-          <label for="daily-time-entry-reminder" class="toggle"><span></span></label>
+      <section data-tab="general">
+        <label class="row">
+          <p>Daily reminders</p>
+
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="daily-time-entry-reminder" />
+            <label for="daily-time-entry-reminder" class="toggle"><span></span></label>
+          </div>
+        </label>
+
+        <label class="row">
+          <p>End of week reminders</p>
+
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="end-of-week-timesheet-reminder" />
+            <label for="end-of-week-timesheet-reminder" class="toggle"><span></span></label>
+          </div>
+        </label>
+
+        <label class="row">
+          <p>End of month reminders (BETA)</p>
+
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="end-of-month-timesheet-reminder" />
+            <label for="end-of-month-timesheet-reminder" class="toggle"><span></span></label>
+          </div>
+        </label>
+      </section>
+
+      <section class="hidden" data-tab="clock">
+        <div id="clock-daily-reminder">
+          <p class="heading">Daily reminder</p>
+          <div id="daily-reminder-days" class="day-selector">
+            <button type="button" data-day-of-week="monday">Mon</button>
+            <button type="button" data-day-of-week="tuesday">Tue</button>
+            <button type="button" data-day-of-week="wednesday">Wed</button>
+            <button type="button" data-day-of-week="thursday">Thur</button>
+            <button type="button" data-day-of-week="friday">Fri</button>
+            <button type="button" data-day-of-week="saturday">Sat</button>
+            <button type="button" data-day-of-week="sunday">Sun</button>
+          </div>
+
+          <p id="daily-reminder-error" class="error hidden">Please select at least one day.</p>
+
+          <div class="time-selections">
+            <div class="time-selector">
+              <label>
+                <span>Start</span>
+                <input id="daily-reminder-start-time" type="time" value="09:00" />
+              </label>
+            </div>
+          </div>
         </div>
-      </label>
 
-      <label class="row">
-        <p>End of week reminders</p>
+        <div id="clock-end-of-week">
+          <p class="heading">End of week reminder</p>
 
-        <div class="checkbox-wrapper">
-          <input type="checkbox" id="end-of-week-timesheet-reminder" />
-          <label for="end-of-week-timesheet-reminder" class="toggle"><span></span></label>
+          <div id="end-of-week-day-of-week" class="day-selector">
+            <button type="button" data-day-of-week="monday">Mon</button>
+            <button type="button" data-day-of-week="tuesday">Tue</button>
+            <button type="button" data-day-of-week="wednesday">Wed</button>
+            <button type="button" data-day-of-week="thursday">Thur</button>
+            <button type="button" data-day-of-week="friday">Fri</button>
+            <button type="button" data-day-of-week="saturday">Sat</button>
+            <button type="button" data-day-of-week="sunday">Sun</button>
+          </div>
+
+          <div class="time-selections">
+            <div class="time-selector">
+              <label>
+                <span>Start</span>
+                <input id="end-of-week-start-time" type="time" value="09:00" />
+              </label>
+            </div>
+
+            <div class="time-selector">
+              <label>
+                <span>Due</span>
+                <input id="end-of-week-due-time" type="time" value="17:00" />
+              </label>
+            </div>
+          </div>
+
+          <p id="end-of-week-error" class="error hidden">The due time must be after the start time.</p>
         </div>
-      </label>
 
-      <label class="row">
-        <p>End of month reminders (BETA)</p>
+        <div id="clock-end-of-month">
+          <p class="heading">End of month reminder</p>
 
-        <div class="checkbox-wrapper">
-          <input type="checkbox" id="end-of-month-timesheet-reminder" />
-          <label for="end-of-month-timesheet-reminder" class="toggle"><span></span></label>
+          <div class="time-selections">
+            <div class="time-selector">
+              <label>
+                <span>Start</span>
+                <input id="end-of-month-start-time" type="time" value="09:00" />
+              </label>
+            </div>
+
+            <div class="time-selector">
+              <label>
+                <span>Due</span>
+                <input id="end-of-month-due-time" type="time" value="17:00" />
+              </label>
+            </div>
+          </div>
+
+          <p id="end-of-month-error" class="error hidden">The due time must be after the start time.</p>
         </div>
-      </label>
+      </section>
 
-      <p>Reminder icon</p>
-      <div id="gif-selector"></div>
+      <section class="hidden" data-tab="alert">
+        <p>Reminder icon</p>
+        <div id="gif-selector"></div>
 
-      <p>Reminder sound</p>
-      <div id="sound-selector"></div>
+        <p>Reminder sound</p>
+        <div id="sound-selector"></div>
+      </section>
 
       <div id="buttons">
         <input id="save" type="submit" value="Save" />

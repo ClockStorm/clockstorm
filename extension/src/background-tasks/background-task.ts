@@ -57,3 +57,44 @@ export const executeBackgroundTask = <TState extends BackgroundTaskState>(
 
   return () => isRunning
 }
+
+export type CancelSetIntervalAsyncFn = () => void
+export type SetIntervalAsyncCallbackFn = () => Promise<boolean>
+
+// Simple wrapper around background task that models `setInterval` behavior.
+export const setIntervalAsync = (callback: SetIntervalAsyncCallbackFn, delay: number): CancelSetIntervalAsyncFn => {
+  let isCancelled = false
+  const checkCancellationFunction = () => isCancelled
+
+  const task: BackgroundTask<BackgroundTaskState> = {
+    createInitialState: async () => {
+      return {
+        type: 'delay',
+        delay,
+      }
+    },
+    execute: async (state) => {
+      const shouldContinue = await callback()
+
+      if (!shouldContinue) {
+        return {
+          type: 'done',
+        }
+      }
+
+      return state
+    },
+  }
+
+  executeBackgroundTask({
+    task,
+    checkCancellationFunction,
+    onDoneFunction: () => {
+      /* no-op */
+    },
+  })
+
+  return () => {
+    isCancelled = true
+  }
+}

@@ -1,6 +1,6 @@
 import equal from 'fast-deep-equal'
 import { z } from 'zod'
-import { DateOnly, DayOfWeek } from './dates'
+import { DateOnly } from './dates'
 
 export const TimeCardStatus = z.union([
   z.literal('submitted'),
@@ -66,8 +66,6 @@ export interface DaysFilled {
   sunday: boolean
 }
 
-export const isTimeSheet = (input: any): input is TimeSheet => TimeSheet.safeParse(input).success
-
 export const isTimeSheetEqual = (first: TimeSheet | null, second: TimeSheet | null) => {
   return equal(first, second)
 }
@@ -78,5 +76,5 @@ export interface TimeSheetSummary {
   totalDaysSubmitted: number
   totalDaysSaved: number
   timeRemaining: string
-  alertableLastDayOfMonth: DayOfWeek | null
+  endOfMonthReminderDate: DateOnly | null
 }

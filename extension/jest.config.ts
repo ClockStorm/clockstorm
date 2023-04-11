@@ -10,4 +10,5 @@ export default {
   coverageProvider: 'v8',
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'jsdom',
+  testPathIgnorePatterns: ['/mocks/', '/node_modules/'],
 }

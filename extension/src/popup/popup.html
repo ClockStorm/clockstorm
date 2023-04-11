@@ -7,59 +7,90 @@
   </head>
   <body>
     <div id="popup">
-      <div id="summary" class="hidden">
-        <h2>Time Sheet Summary</h2>
+      <div id="week-selector" class="hidden">
+        <a role="button" data-week-direction="previous"
+          ><span class="notification"></span><i class="fa-solid fa-square-caret-left"></i
+          ><i class="fa-regular fa-square-caret-left"></i
+        ></a>
+        <span id="week-selector-date"></span>
+        <a role="button" data-week-direction="next"
+          ><span class="notification"></span><i class="fa-solid fa-square-caret-right"></i
+          ><i class="fa-regular fa-square-caret-right"></i
+        ></a>
+      </div>
+      <div id="container">
+        <div id="summary" class="hidden">
+          <h2>Time Sheet Summary</h2>
 
-        <div class="row">
-          <div class="left">
-            <img src="images/logo32.png" alt="Clock Storm" />
-          </div>
-          <div class="right">
-            <p><span id="timecard-days-saved" class="timecard-dynamic-value"></span> days saved</p>
-            <p><span id="timecard-days-submitted" class="timecard-dynamic-value"></span> days submitted</p>
-            <p>
-              <span id="timecard-time-left" class="timecard-dynamic-value"></span> time left to finish your time cards!
-            </p>
+          <div class="row">
+            <div class="left">
+              <img src="images/logo32.png" alt="Clock Storm" />
+            </div>
+            <div class="right">
+              <p><span id="timecard-days-saved" class="timecard-dynamic-value"></span> days saved</p>
+              <p><span id="timecard-days-submitted" class="timecard-dynamic-value"></span> days submitted</p>
+              <p id="timecard-time-left-wrapper">
+                <span id="timecard-time-left" class="timecard-dynamic-value"></span> time left to finish your time
+                cards!
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="active-notifications" class="hidden">
-        <h2>Active Notifications</h2>
-        <div class="row">
-          <div class="left">
-            <i class="status fa-solid fa-triangle-exclamation"></i>
+        <div id="active-notifications" class="hidden">
+          <h2>Active Notifications</h2>
+          <div class="row">
+            <div class="left">
+              <i class="status fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="right">
+              <ul></ul>
+            </div>
           </div>
-          <div class="right">
-            <ul></ul>
-          </div>
+          <p>To clear your active notification, navigate to your time sheet and proceed.</p>
         </div>
-        <p>To clear your active notification, navigate to your time sheet and proceed.</p>
-      </div>
 
-      <div id="loading">
-        <p><i class="fa-solid fa-spinner fa-spin" title="Loading"></i></p>
-      </div>
+        <div id="loading">
+          <p><i class="fa-solid fa-spinner fa-spin" title="Loading"></i></p>
+        </div>
 
-      <div id="links">
-        <p class="settings">
-          <a href="#" id="settings-link" title="Settings"><i class="fa-solid fa-gear"></i></a>
-        </p>
-        <p class="guide">
-          <a href="https://www.clockstorm.com/#guide" title="User Guide" target="_blank"><i class="fa-solid fa-book"></i></a>
-        </p>
-        <p class="github">
-          <a href="https://github.com/clockstorm/clockstorm" title="GitHub" target="_blank"><i class="fa-brands fa-github"></i></a>
-        </p>
-        <p class="bug">
-          <a href="https://github.com/ClockStorm/clockstorm/issues/new?template=bug_report.md" title="Bug Report" target="_blank"><i class="fa-solid fa-bug"></i></a>
-        </p>
-        <p class="idea">
-          <a href="https://github.com/ClockStorm/clockstorm/issues/new?template=feature_request.md" title="Feature Request" target="_blank"><i class="fa-solid fa-lightbulb"></i></a>
-        </p>
-        <p class="discord">
-          <a href="https://discord.com/invite/xSmDZGcZjd" title="Discord" target="_blank"><i class="fa-brands fa-discord"></i></a>
-        </p>
+        <div id="links">
+          <p class="settings">
+            <a href="#" id="settings-link" title="Settings"><i class="fa-solid fa-gear"></i></a>
+          </p>
+          <p class="guide">
+            <a href="https://www.clockstorm.com/#guide" title="User Guide" target="_blank"
+              ><i class="fa-solid fa-book"></i
+            ></a>
+          </p>
+          <p class="github">
+            <a href="https://github.com/clockstorm/clockstorm" title="GitHub" target="_blank"
+              ><i class="fa-brands fa-github"></i
+            ></a>
+          </p>
+          <p class="bug">
+            <a
+              href="https://github.com/ClockStorm/clockstorm/issues/new?template=bug_report.md"
+              title="Bug Report"
+              target="_blank"
+              ><i class="fa-solid fa-bug"></i
+            ></a>
+          </p>
+          <p class="idea">
+            <a
+              href="https://github.com/ClockStorm/clockstorm/issues/new?template=feature_request.md"
+              title="Feature Request"
+              target="_blank"
+              ><i class="fa-solid fa-lightbulb"></i
+            ></a>
+          </p>
+          <p class="discord">
+            <a href="https://discord.com/invite/xSmDZGcZjd" title="Discord" target="_blank"
+              ><i class="fa-brands fa-discord"></i
+            ></a>
+          </p>
+        </div>
+      </div>
     </div>
   </body>
 </html>

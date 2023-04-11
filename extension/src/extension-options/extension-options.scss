@@ -25,6 +25,74 @@ label.row {
   cursor: pointer;
 }
 
+p {
+  &.heading {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  &.memo {
+    margin-top: 5px;
+    font-size: 11px;
+    color: rgb(97, 97, 97);
+  }
+}
+
+#tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-bottom: -1px;
+
+  a,
+  a:visited,
+  a:active {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    font-family: Roboto, system-ui, sans-serif;
+    border-radius: 4px 4px 0 0;
+    color: rgb(26, 115, 232);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(218, 220, 224);
+    background-color: white;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 12px;
+    box-sizing: border-box;
+    height: 34px;
+
+    span {
+      margin-left: 6px;
+    }
+
+    &:hover {
+      background-color: rgb(248, 250, 254);
+      border-color: rgb(210, 227, 252);
+    }
+
+    &.selected {
+      border-width: 1px 1px 0 1px;
+    }
+  }
+}
+
+section {
+  margin-bottom: 10px;
+  padding: 11px 10px 10px 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(218, 220, 224);
+  border-radius: 0 4px 4px 4px;
+
+  &.hidden {
+    display: none;
+  }
+}
+
 #gif-selector,
 #sound-selector {
   display: grid;
@@ -175,11 +243,18 @@ label.row {
   cursor: pointer;
   font-size: 13px;
   font-weight: bold;
-}
 
-#save:hover {
-  background-color: rgb(248, 250, 254);
-  border: 1px solid rgb(210, 227, 252);
+  &:hover {
+    background-color: rgb(248, 250, 254);
+    border: 1px solid rgb(210, 227, 252);
+  }
+
+  &:disabled {
+    cursor: default;
+    color: rgb(129, 134, 138);
+    background-color: white;
+    border: 1px solid rgb(241, 243, 244);
+  }
 }
 
 #version {
@@ -187,4 +262,202 @@ label.row {
   text-align: center;
   color: rgba(154, 153, 153, 0.7);
   font-style: italic;
+}
+
+.day-selector {
+  display: flex;
+  flex-direction: row;
+
+  button {
+    height: 60px;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 14.2%;
+
+    color: rgb(26, 115, 232);
+    border-style: solid;
+    border-color: rgb(218, 220, 224);
+    border-width: 1px;
+    border-left-width: 0;
+    background-color: white;
+    padding: 0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: rgb(248, 250, 254);
+      border-color: rgb(210, 227, 252);
+    }
+
+    &.selected {
+      background-color: rgb(237, 242, 252);
+    }
+
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+      border-left-width: 1px;
+    }
+
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+      border-right-width: 1px;
+    }
+  }
+}
+
+.time-selector {
+  display: flex;
+  align-items: center;
+
+  label {
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 12px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+  }
+
+  input {
+    all: unset;
+    display: flex;
+    align-items: center;
+    border: 0;
+    font-family: Roboto, system-ui, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+
+    &,
+    &::-webkit-datetime-edit,
+    &::-webkit-datetime-edit-fields-wrapper {
+      width: 134px;
+      padding: 0;
+    }
+
+    &::-webkit-datetime-edit-hour-field,
+    &::-webkit-datetime-edit-minute-field,
+    &::-webkit-datetime-edit-ampm-field {
+      display: inline-flex;
+      box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+      color: rgb(26, 115, 232);
+      border-style: solid;
+      border-color: rgb(218, 220, 224);
+      border-width: 1px;
+      background-color: white;
+      border-radius: 4px;
+      padding: 0;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      width: 30px;
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: rgb(248, 250, 254);
+        border-color: rgb(210, 227, 252);
+      }
+    }
+
+    &::-webkit-datetime-edit-hour-field,
+    &::-webkit-datetime-edit-minute-field,
+    &::-webkit-datetime-edit-ampm-field,
+    &::-webkit-calendar-picker-indicator {
+      height: 30px;
+    }
+
+    &::-webkit-datetime-edit-hour-field {
+      margin-right: 5px;
+    }
+
+    &::-webkit-datetime-edit-minute-field {
+      margin-left: 5px;
+    }
+
+    &::-webkit-datetime-edit-fields-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    &::-webkit-datetime-edit-text {
+      white-space: normal;
+    }
+
+    &::-webkit-datetime-edit-ampm-field {
+      margin-left: 5px;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      padding: 0 5px;
+      margin: 0;
+      cursor: pointer;
+      background-position: center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --%3E%3Cpath d='M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z' fill='%231a73e8'/%3E%3C/svg%3E");
+    }
+
+    &::-webkit-clear-button {
+      display: none;
+    }
+  }
+}
+
+#weekly-due-date {
+  .day-selector {
+    margin-top: 10px;
+
+    button {
+      height: 30px;
+    }
+  }
+
+  .time-selector {
+    justify-content: flex-end;
+    margin-top: 5px;
+  }
+}
+
+.time-selections {
+  display: flex;
+  justify-content: space-between;
+}
+
+.day-selector {
+  margin-bottom: 5px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  text-align: center;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+#clock-daily-reminder {
+  .error {
+    margin-bottom: 5px;
+  }
+}
+
+#clock-end-of-week,
+#clock-end-of-month {
+  .error {
+    margin-top: 5px;
+  }
+}
+
+#clock-daily-reminder,
+#clock-end-of-week {
+  margin-bottom: 10px;
 }
