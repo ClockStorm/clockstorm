@@ -14,6 +14,10 @@
 - Options screen is now split up into tabs: "General", "Timing", "Alert".
 - Reminders will occur for previous weeks of missing time sheet information (bounded by the installation date of the extension).
 
+### Fixed
+
+- Styling issues of time pickers caused by recent Chrome update.
+
 ## [1.1.0] - 2023-03-29
 
 ### Added
