@@ -6,14 +6,15 @@ import {
   TimeOnly,
 } from '../types/dates'
 import { ExtensionOptions } from '../types/extension-options'
+import { createTimePicker } from './time-picker'
 import { validator } from './validator'
 
 export const isValidTimes = (): boolean => {
-  const startTimeElement = document.getElementById('end-of-week-start-time') as HTMLInputElement
-  const dueTimeElement = document.getElementById('end-of-week-due-time') as HTMLInputElement
+  const startTimeElement = createTimePicker(document.getElementById('end-of-week-start-time') as HTMLDivElement)
+  const dueTimeElement = createTimePicker(document.getElementById('end-of-week-due-time') as HTMLDivElement)
 
-  const startTime = convertInputTimeToTimeOnly(startTimeElement.value)
-  const dueTime = convertInputTimeToTimeOnly(dueTimeElement.value)
+  const startTime = convertInputTimeToTimeOnly(startTimeElement.getValue())
+  const dueTime = convertInputTimeToTimeOnly(dueTimeElement.getValue())
 
   if (!startTime || !dueTime) {
     return false
@@ -41,8 +42,8 @@ const validate = () => {
 export const createEndOfWeekReminderSelectors = (extensionOptions: ExtensionOptions) => {
   const dayOfWeekElement = document.getElementById('end-of-week-day-of-week') as HTMLDivElement
   const dayOfWeekButtons = dayOfWeekElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>
-  const startTimeElement = document.getElementById('end-of-week-start-time') as HTMLInputElement
-  const dueTimeElement = document.getElementById('end-of-week-due-time') as HTMLInputElement
+  const startTimeElement = createTimePicker(document.getElementById('end-of-week-start-time') as HTMLDivElement)
+  const dueTimeElement = createTimePicker(document.getElementById('end-of-week-due-time') as HTMLDivElement)
 
   dayOfWeekButtons.forEach((button) => {
     const buttonDayOfWeek = button.getAttribute('data-day-of-week') as DayOfWeek
@@ -58,11 +59,11 @@ export const createEndOfWeekReminderSelectors = (extensionOptions: ExtensionOpti
     })
   })
 
-  startTimeElement.value = convertTimeOnlyToInputTime(extensionOptions.endOfWeekReminderStartTime)
-  dueTimeElement.value = convertTimeOnlyToInputTime(extensionOptions.endOfWeekReminderDueTime)
+  startTimeElement.setValue(convertTimeOnlyToInputTime(extensionOptions.endOfWeekReminderStartTime))
+  dueTimeElement.setValue(convertTimeOnlyToInputTime(extensionOptions.endOfWeekReminderDueTime))
 
-  startTimeElement.addEventListener('change', validate)
-  dueTimeElement.addEventListener('change', validate)
+  startTimeElement.addChangeListener(validate)
+  dueTimeElement.addChangeListener(validate)
 }
 
 export const getEndOfWeekReminderSelectedDayOfWeek = (): DayOfWeek => {
@@ -72,11 +73,11 @@ export const getEndOfWeekReminderSelectedDayOfWeek = (): DayOfWeek => {
 }
 
 export const getEndOfWeekReminderSelectedStartTime = (): TimeOnly => {
-  const timeElement = document.getElementById('end-of-week-start-time') as HTMLInputElement
-  return convertInputTimeToTimeOnly(timeElement.value)
+  const timeElement = createTimePicker(document.getElementById('end-of-week-start-time') as HTMLDivElement)
+  return convertInputTimeToTimeOnly(timeElement.getValue())
 }
 
 export const getEndOfWeekReminderSelectedDueTime = (): TimeOnly => {
-  const timeElement = document.getElementById('end-of-week-due-time') as HTMLInputElement
-  return convertInputTimeToTimeOnly(timeElement.value)
+  const timeElement = createTimePicker(document.getElementById('end-of-week-due-time') as HTMLDivElement)
+  return convertInputTimeToTimeOnly(timeElement.getValue())
 }

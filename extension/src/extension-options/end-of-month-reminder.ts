@@ -1,13 +1,14 @@
 import { compareTimeOnly, convertInputTimeToTimeOnly, convertTimeOnlyToInputTime, TimeOnly } from '@src/types/dates'
 import { ExtensionOptions } from '@src/types/extension-options'
+import { createTimePicker } from './time-picker'
 import { validator } from './validator'
 
 export const isValidTimes = (): boolean => {
-  const startTimeElement = document.getElementById('end-of-month-start-time') as HTMLInputElement
-  const dueTimeElement = document.getElementById('end-of-month-due-time') as HTMLInputElement
+  const startTimeElement = createTimePicker(document.getElementById('end-of-month-start-time') as HTMLDivElement)
+  const dueTimeElement = createTimePicker(document.getElementById('end-of-month-due-time') as HTMLDivElement)
 
-  const startTime = convertInputTimeToTimeOnly(startTimeElement.value)
-  const dueTime = convertInputTimeToTimeOnly(dueTimeElement.value)
+  const startTime = convertInputTimeToTimeOnly(startTimeElement.getValue())
+  const dueTime = convertInputTimeToTimeOnly(dueTimeElement.getValue())
 
   if (!startTime || !dueTime) {
     return false
@@ -34,22 +35,22 @@ const validate = () => {
 }
 
 export const createEndOfMonthReminderSelectors = (extensionOptions: ExtensionOptions) => {
-  const startTimeElement = document.getElementById('end-of-month-start-time') as HTMLInputElement
-  const dueTimeElement = document.getElementById('end-of-month-due-time') as HTMLInputElement
+  const startTimeElement = createTimePicker(document.getElementById('end-of-month-start-time') as HTMLDivElement)
+  const dueTimeElement = createTimePicker(document.getElementById('end-of-month-due-time') as HTMLDivElement)
 
-  startTimeElement.value = convertTimeOnlyToInputTime(extensionOptions.endOfMonthReminderStartTime)
-  dueTimeElement.value = convertTimeOnlyToInputTime(extensionOptions.endOfMonthReminderDueTime)
+  startTimeElement.setValue(convertTimeOnlyToInputTime(extensionOptions.endOfMonthReminderStartTime))
+  dueTimeElement.setValue(convertTimeOnlyToInputTime(extensionOptions.endOfMonthReminderDueTime))
 
-  startTimeElement.addEventListener('change', validate)
-  dueTimeElement.addEventListener('change', validate)
+  startTimeElement.addChangeListener(validate)
+  dueTimeElement.addChangeListener(validate)
 }
 
 export const getEndOfMonthSelectedStartTime = (): TimeOnly => {
-  const timeElement = document.getElementById('end-of-month-start-time') as HTMLInputElement
-  return convertInputTimeToTimeOnly(timeElement.value)
+  const timeElement = createTimePicker(document.getElementById('end-of-month-start-time') as HTMLDivElement)
+  return convertInputTimeToTimeOnly(timeElement.getValue())
 }
 
 export const getEndOfMonthSelectedDueTime = (): TimeOnly => {
-  const timeElement = document.getElementById('end-of-month-due-time') as HTMLInputElement
-  return convertInputTimeToTimeOnly(timeElement.value)
+  const timeElement = createTimePicker(document.getElementById('end-of-month-due-time') as HTMLDivElement)
+  return convertInputTimeToTimeOnly(timeElement.getValue())
 }

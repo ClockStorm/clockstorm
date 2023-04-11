@@ -314,40 +314,29 @@ section {
   display: flex;
   align-items: center;
 
-  label {
+  .time-selector-label {
     display: flex;
     align-items: center;
 
-    span {
+    .label-text {
       font-size: 12px;
       font-weight: bold;
       margin-right: 10px;
+      font-family: Roboto, system-ui, sans-serif;
     }
   }
 
-  input {
-    all: unset;
+  .time-picker-input {
     display: flex;
     align-items: center;
-    border: 0;
     font-family: Roboto, system-ui, sans-serif;
     font-weight: bold;
     font-size: 13px;
+    height: 30px;
 
-    &,
-    &::-webkit-datetime-edit,
-    &::-webkit-datetime-edit-fields-wrapper {
-      width: 134px;
-      padding: 0;
-    }
-
-    &::-webkit-datetime-edit-hour-field,
-    &::-webkit-datetime-edit-minute-field,
-    &::-webkit-datetime-edit-ampm-field {
-      display: inline-flex;
+    .hour-selector,
+    .minute-selector {
       box-sizing: border-box;
-      justify-content: center;
-      align-items: center;
       color: rgb(26, 115, 232);
       border-style: solid;
       border-color: rgb(218, 220, 224);
@@ -359,53 +348,69 @@ section {
       font-size: 13px;
       font-weight: bold;
       width: 30px;
+      height: 30px;
+      text-align: center;
+      outline: none;
 
       &:hover,
-      &:active,
-      &:focus {
+      &:focus,
+      &:active {
         background-color: rgb(248, 250, 254);
         border-color: rgb(210, 227, 252);
       }
     }
 
-    &::-webkit-datetime-edit-hour-field,
-    &::-webkit-datetime-edit-minute-field,
-    &::-webkit-datetime-edit-ampm-field,
-    &::-webkit-calendar-picker-indicator {
-      height: 30px;
-    }
-
-    &::-webkit-datetime-edit-hour-field {
+    .hour-selector {
       margin-right: 5px;
     }
 
-    &::-webkit-datetime-edit-minute-field {
+    .minute-selector {
       margin-left: 5px;
     }
 
-    &::-webkit-datetime-edit-fields-wrapper {
+    .am-pm-selector {
+      margin-left: 5px;
       display: flex;
-      align-items: center;
-    }
+      flex-direction: column;
 
-    &::-webkit-datetime-edit-text {
-      white-space: normal;
-    }
+      button {
+        height: 15px;
+        border: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 30px;
+        color: rgb(26, 115, 232);
+        border-style: solid;
+        border-color: rgb(218, 220, 224);
+        border-width: 1px;
+        background-color: white;
+        padding: 0;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
 
-    &::-webkit-datetime-edit-ampm-field {
-      margin-left: 5px;
-    }
+        &:hover {
+          background-color: rgb(248, 250, 254);
+          border-color: rgb(210, 227, 252);
+        }
 
-    &::-webkit-calendar-picker-indicator {
-      padding: 0 5px;
-      margin: 0;
-      cursor: pointer;
-      background-position: center;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --%3E%3Cpath d='M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z' fill='%231a73e8'/%3E%3C/svg%3E");
-    }
+        &.selected {
+          background-color: rgb(237, 242, 252);
+        }
 
-    &::-webkit-clear-button {
-      display: none;
+        &:first-child {
+          border-radius: 4px 4px 0 0;
+          border-bottom-width: 0.5px;
+        }
+
+        &:last-child {
+          border-radius: 0 0 4px 4px;
+          border-top-width: 0.5px;
+        }
+      }
     }
   }
 }

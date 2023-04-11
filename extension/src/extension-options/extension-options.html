@@ -60,10 +60,19 @@
 
           <div class="time-selections">
             <div class="time-selector">
-              <label>
-                <span>Start</span>
-                <input id="daily-reminder-start-time" type="time" value="09:00" />
-              </label>
+              <div class="time-selector-label">
+                <span class="label-text">Start</span>
+
+                <div id="daily-reminder-start-time" class="time-picker-input">
+                  <input class="hour-selector" type="text" data-default-value="09" />
+                  <span>:</span>
+                  <input class="minute-selector" type="text" data-default-value="00" />
+                  <div class="am-pm-selector">
+                    <button type="button" class="selected" data-am-pm="am">AM</button>
+                    <button type="button" data-am-pm="pm">PM</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -83,17 +92,33 @@
 
           <div class="time-selections">
             <div class="time-selector">
-              <label>
-                <span>Start</span>
-                <input id="end-of-week-start-time" type="time" value="09:00" />
-              </label>
+              <div class="time-selector-label">
+                <span class="label-text">Start</span>
+                <div id="end-of-week-start-time" class="time-picker-input">
+                  <input class="hour-selector" type="text" data-default-value="09" />
+                  <span>:</span>
+                  <input class="minute-selector" type="text" data-default-value="00" />
+                  <div class="am-pm-selector">
+                    <button type="button" class="selected" data-am-pm="am">AM</button>
+                    <button type="button" data-am-pm="pm">PM</button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="time-selector">
-              <label>
-                <span>Due</span>
-                <input id="end-of-week-due-time" type="time" value="17:00" />
-              </label>
+              <div class="time-selector-label">
+                <span class="label-text">Due</span>
+                <div id="end-of-week-due-time" class="time-picker-input">
+                  <input class="hour-selector" type="text" data-default-value="05" />
+                  <span>:</span>
+                  <input class="minute-selector" type="text" data-default-value="00" />
+                  <div class="am-pm-selector">
+                    <button type="button" data-am-pm="am">AM</button>
+                    <button type="button" class="selected" data-am-pm="pm">PM</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -105,17 +130,33 @@
 
           <div class="time-selections">
             <div class="time-selector">
-              <label>
-                <span>Start</span>
-                <input id="end-of-month-start-time" type="time" value="09:00" />
-              </label>
+              <div class="time-selector-label">
+                <span class="label-text">Start</span>
+                <div id="end-of-month-start-time" class="time-picker-input">
+                  <input class="hour-selector" type="text" data-default-value="09" />
+                  <span>:</span>
+                  <input class="minute-selector" type="text" data-default-value="00" />
+                  <div class="am-pm-selector">
+                    <button type="button" class="selected" data-am-pm="am">AM</button>
+                    <button type="button" data-am-pm="pm">PM</button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="time-selector">
-              <label>
-                <span>Due</span>
-                <input id="end-of-month-due-time" type="time" value="17:00" />
-              </label>
+              <div class="time-selector-label">
+                <span class="label-text">Due</span>
+                <div id="end-of-month-due-time" class="time-picker-input">
+                  <input class="hour-selector" type="text" data-default-value="05" />
+                  <span>:</span>
+                  <input class="minute-selector" type="text" data-default-value="00" />
+                  <div class="am-pm-selector">
+                    <button type="button" data-am-pm="am">AM</button>
+                    <button type="button" class="selected" data-am-pm="pm">PM</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -1,5 +1,6 @@
-import { convertInputTimeToTimeOnly, convertTimeOnlyToInputTime, DayOfWeek, TimeOnly } from '@src/types/dates'
-import { ExtensionOptions } from '@src/types/extension-options'
+import { convertInputTimeToTimeOnly, convertTimeOnlyToInputTime, DayOfWeek, TimeOnly } from '../types/dates'
+import { ExtensionOptions } from '../types/extension-options'
+import { createTimePicker } from './time-picker'
 import { validator } from './validator'
 
 const validate = () => {
@@ -18,7 +19,7 @@ const validate = () => {
 export const createDailyReminderSelectors = (extensionOptions: ExtensionOptions) => {
   const daysElement = document.getElementById('daily-reminder-days') as HTMLDivElement
   const dayButtons = daysElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>
-  const startTimeElement = document.getElementById('daily-reminder-start-time') as HTMLInputElement
+  const startTimeElement = createTimePicker(document.getElementById('daily-reminder-start-time') as HTMLDivElement)
 
   dayButtons.forEach((button) => {
     const buttonDayOfWeek = button.getAttribute('data-day-of-week') as DayOfWeek
@@ -34,7 +35,7 @@ export const createDailyReminderSelectors = (extensionOptions: ExtensionOptions)
     })
   })
 
-  startTimeElement.value = convertTimeOnlyToInputTime(extensionOptions.dailyReminderStartTime)
+  startTimeElement.setValue(convertTimeOnlyToInputTime(extensionOptions.dailyReminderStartTime))
 }
 
 export const getDailyReminderSelectedDays = (): DayOfWeek[] => {
@@ -44,6 +45,6 @@ export const getDailyReminderSelectedDays = (): DayOfWeek[] => {
 }
 
 export const getDailyReminderSelectedStartTime = (): TimeOnly => {
-  const timeElement = document.getElementById('daily-reminder-start-time') as HTMLInputElement
-  return convertInputTimeToTimeOnly(timeElement.value)
+  const timeElement = createTimePicker(document.getElementById('daily-reminder-start-time') as HTMLDivElement)
+  return convertInputTimeToTimeOnly(timeElement.getValue())
 }
