@@ -8,6 +8,7 @@ import {
   convertTimeOnlyToInputTime,
   fromDateOnlyKey,
   getDayOfWeek,
+  getDisplayDate,
   getDisplayDayOfWeek,
   getLastDayOfMonth,
   getMondayOfDateOnly,
@@ -39,6 +40,13 @@ describe('getDisplayDayOfWeek', () => {
     expect(getDisplayDayOfWeek('friday')).toBe('Friday')
     expect(getDisplayDayOfWeek('saturday')).toBe('Saturday')
     expect(getDisplayDayOfWeek('sunday')).toBe('Sunday')
+  })
+})
+
+describe('getDisplayDate', () => {
+  test('returns the correct display value', () => {
+    expect(getDisplayDate({ year: 2021, month: 1, day: 2 })).toBe('1/2/2021')
+    expect(getDisplayDate({ year: 2022, month: 12, day: 31 })).toBe('12/31/2022')
   })
 })
 

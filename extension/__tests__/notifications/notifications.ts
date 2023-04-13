@@ -1,8 +1,13 @@
 import { describe, expect, jest, test } from '@jest/globals'
-import { checkShouldNotify, getActiveNotificationTypes } from '../../src/notifications/notifications'
+import {
+  checkAnyTimeSheetNotifications,
+  getAllNotifications,
+  getTimeSheetNotifications,
+} from '../../src/notifications/notifications'
 import { summarizeTimeSheet } from '../../src/time-sheets/summary'
 import { DateOnly } from '../../src/types/dates'
 import { ExtensionOptions } from '../../src/types/extension-options'
+import { Notification, Notifications } from '../../src/types/notifications'
 import { TimeSheet, TimeSheetDates } from '../../src/types/time-sheet'
 import { createMockLocalStorage, installMockLocalStorage } from '../mocks/mock.chrome-local-storage'
 
@@ -112,7 +117,7 @@ const defaultExtensionOptions: ExtensionOptions = {
   },
 }
 
-describe('getActiveNotificationTypes', () => {
+describe('getTimeSheetNotifications', () => {
   test('when there are no time cards submitted and it is thursday and the reminder is enabled', async () => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 2, 16, 9, 0, 0))
 
@@ -143,7 +148,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     expect(actual).toEqual([
       {
@@ -182,7 +187,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
     expect(actual).toEqual([])
   })
 
@@ -216,7 +221,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     expect(actual).toEqual([
       {
@@ -260,7 +265,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     expect(actual).toEqual([
       {
@@ -316,7 +321,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
     expect(actual).toEqual([])
   })
 
@@ -362,7 +367,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
     expect(actual).toEqual([
       {
         type: 'end-of-week',
@@ -412,7 +417,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
     expect(actual).toEqual([])
   })
 
@@ -446,12 +451,18 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
-    expect(actual).toEqual([
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
+    const expected: Notification[] = [
       {
         type: 'end-of-month',
+        endOfMonthDate: {
+          year: 2023,
+          month: 5,
+          day: 31,
+        },
       },
-    ])
+    ]
+    expect(actual).toEqual(expected)
   })
 
   test('when the user has no days clocked at the end of the week', async () => {
@@ -471,9 +482,8 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
-
-    expect(actual).toEqual([
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
+    const expected: Notification[] = [
       {
         type: 'daily',
         dayOfWeek: 'monday',
@@ -499,8 +509,14 @@ describe('getActiveNotificationTypes', () => {
       },
       {
         type: 'end-of-month',
+        endOfMonthDate: {
+          year: 2023,
+          month: 5,
+          day: 31,
+        },
       },
-    ])
+    ]
+    expect(actual).toEqual(expected)
   })
 
   test('when the daily reminder is enabled but it is right before the start time', async () => {
@@ -522,7 +538,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     expect(actual).toEqual([])
   })
@@ -555,7 +571,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     expect(actual).toEqual([])
   })
@@ -580,7 +596,7 @@ describe('getActiveNotificationTypes', () => {
 
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
 
-    const actual = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const actual = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     expect(actual).toEqual([])
   })
@@ -589,8 +605,8 @@ describe('getActiveNotificationTypes', () => {
 const mockStorage = createMockLocalStorage()
 installMockLocalStorage(mockStorage)
 
-describe('checkShouldNotify', () => {
-  test('returns true when any week since installation date has notifications', async () => {
+describe('getAllNotifications', () => {
+  test('returns a map of notifications with an entry per week', async () => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 4, 11, 17, 0, 0))
 
     const installationDate: DateOnly = {
@@ -700,11 +716,22 @@ describe('checkShouldNotify', () => {
       'timesheet-05/08/2023': currentWeekSheet,
     })
 
-    const actual = await checkShouldNotify(defaultExtensionOptions)
-    expect(actual).toBe(true)
+    const actual = await getAllNotifications(defaultExtensionOptions)
+    const expected: Notifications = {
+      '05/01/2023': [
+        { dayOfWeek: 'monday', type: 'daily' },
+        { dayOfWeek: 'tuesday', type: 'daily' },
+        { dayOfWeek: 'wednesday', type: 'daily' },
+        { dayOfWeek: 'thursday', type: 'daily' },
+        { dayOfWeek: 'friday', type: 'daily' },
+        { type: 'end-of-week' },
+      ],
+      '05/08/2023': [],
+    }
+    expect(actual).toEqual(expected)
   })
 
-  test('returns false when all week since installation date have no notifications', async () => {
+  test('returns a map with two entries of empty arrays when there is no notifications', async () => {
     jest.useFakeTimers().setSystemTime(new Date(2023, 4, 11, 17, 0, 0))
 
     const installationDate: DateOnly = {
@@ -827,7 +854,40 @@ describe('checkShouldNotify', () => {
       'timesheet-05/08/2023': currentWeekSheet,
     })
 
-    const actual = await checkShouldNotify(defaultExtensionOptions)
+    const actual = await getAllNotifications(defaultExtensionOptions)
+    const expected: Notifications = {
+      '05/01/2023': [],
+      '05/08/2023': [],
+    }
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('checkAnyTimeSheetNotifications', () => {
+  test('returns true when there is a notification', async () => {
+    const notifications: Notifications = {
+      '05/01/2023': [
+        { dayOfWeek: 'monday', type: 'daily' },
+        { dayOfWeek: 'tuesday', type: 'daily' },
+        { dayOfWeek: 'wednesday', type: 'daily' },
+        { dayOfWeek: 'thursday', type: 'daily' },
+        { dayOfWeek: 'friday', type: 'daily' },
+        { type: 'end-of-week' },
+      ],
+      '05/08/2023': [],
+    }
+
+    const actual = checkAnyTimeSheetNotifications(notifications)
+    expect(actual).toBe(true)
+  })
+
+  test('returns false when there is no notification', async () => {
+    const notifications: Notifications = {
+      '05/01/2023': [],
+      '05/08/2023': [],
+    }
+
+    const actual = checkAnyTimeSheetNotifications(notifications)
     expect(actual).toBe(false)
   })
 })

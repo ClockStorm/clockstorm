@@ -39,6 +39,10 @@ export const getDisplayDayOfWeek = (dayOfWeek: DayOfWeek): string => {
   }
 }
 
+export const getDisplayDate = (dateOnly: DateOnly): string => {
+  return `${dateOnly.month}/${dateOnly.day}/${dateOnly.year}`
+}
+
 export const dayOfWeekIndexes: Record<DayOfWeek, number> = {
   monday: 0,
   tuesday: 1,

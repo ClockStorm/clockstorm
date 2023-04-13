@@ -8,6 +8,7 @@
 - Support for setting end of week reminder due date and time, as well as start time for reminders.
 - Support for setting end of week reminder due time, as well as start time for reminders.
 - Users can now browse their time sheet summary for past weeks.
+- Native system notifications.
 
 ### Changed
 

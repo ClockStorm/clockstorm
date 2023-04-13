@@ -2,8 +2,14 @@ import { animatedIcon } from './background-tasks/animated-icon'
 import { executeBackgroundTask } from './background-tasks/background-task'
 import { getExtensionOptions } from './extension-options/storage'
 import { GIFStream, parseGIF } from './gifs/gifs'
-import { checkShouldNotify } from './notifications/notifications'
+import {
+  buildNativeNotificationId,
+  checkIfAnyNotificationsMatchId,
+  createNativeNotification,
+} from './notifications/native'
+import { checkAnyTimeSheetNotifications, getAllNotifications } from './notifications/notifications'
 import { playAudio, stopAudio } from './offscreen/offscreen'
+import { fromDateOnlyKey } from './types/dates'
 import { GIF } from './types/gifs'
 import { waitFor } from './utils/utils'
 
@@ -23,6 +29,21 @@ const main = async () => {
 
   let lastSoundDataUrl: string | null = null
   let soundPlayingId = 0
+
+  const nativeNotificationsShowing: { [key: string]: boolean } = {}
+
+  const clearNativeNotificationsShowing = () => {
+    for (const key of Object.keys(nativeNotificationsShowing)) {
+      nativeNotificationsShowing[key] = false
+    }
+  }
+
+  let lastClearedTime: number | null = null
+
+  chrome.notifications.onClosed.addListener(() => {
+    clearNativeNotificationsShowing()
+    lastClearedTime = Date.now()
+  })
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -45,7 +66,8 @@ const main = async () => {
 
     let newGifLoaded = false
     const extensionOptions = await getExtensionOptions()
-    const shouldNotify = await checkShouldNotify(extensionOptions)
+    const allActiveNotifications = await getAllNotifications(extensionOptions)
+    const shouldNotify = checkAnyTimeSheetNotifications(allActiveNotifications)
 
     if (extensionOptions.gifDataUrl !== lastGifDataUrl) {
       lastGifDataUrl = extensionOptions.gifDataUrl
@@ -59,6 +81,12 @@ const main = async () => {
     if (!shouldNotify) {
       await cancelSound()
       await cancelGif()
+
+      for (const [notificationId] of Object.keys(nativeNotificationsShowing)) {
+        chrome.notifications.clear(notificationId)
+      }
+
+      clearNativeNotificationsShowing()
       continue
     }
 
@@ -69,6 +97,13 @@ const main = async () => {
     if (extensionOptions.soundDataUrl !== lastSoundDataUrl) {
       lastSoundDataUrl = extensionOptions.soundDataUrl
       await cancelSound()
+    }
+
+    for (const notificationId of Object.keys(nativeNotificationsShowing)) {
+      if (!checkIfAnyNotificationsMatchId(allActiveNotifications, notificationId)) {
+        chrome.notifications.clear(notificationId)
+        lastClearedTime = Date.now()
+      }
     }
 
     if (shouldNotify) {
@@ -82,6 +117,24 @@ const main = async () => {
 
       if (!soundPlayingId) {
         soundPlayingId = await playAudio(extensionOptions.soundDataUrl, 1)
+      }
+
+      for (const [startMondayKey, notifications] of Object.entries(allActiveNotifications)) {
+        const startMonday = fromDateOnlyKey(startMondayKey)
+
+        for (const notification of notifications) {
+          const notificationId = buildNativeNotificationId(startMonday, notification)
+          const notificationIsFirstTime = nativeNotificationsShowing[notificationId] === undefined
+
+          if (!notificationIsFirstTime && lastClearedTime !== null && Date.now() - lastClearedTime < 5 * 60 * 1000) {
+            continue
+          }
+
+          if (!nativeNotificationsShowing[notificationId]) {
+            await createNativeNotification(notificationId, startMonday, notification)
+            nativeNotificationsShowing[notificationId] = true
+          }
+        }
       }
     }
   }

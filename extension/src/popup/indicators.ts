@@ -1,4 +1,4 @@
-import { getActiveNotificationTypes } from '../notifications/notifications'
+import { getTimeSheetNotifications } from '../notifications/notifications'
 import { getTimeSheet } from '../time-sheets/storage'
 import { summarizeTimeSheet } from '../time-sheets/summary'
 import { DateOnly } from '../types/dates'
@@ -26,7 +26,7 @@ export const checkShouldIndicatePreviousOrNextWeekReminders = async (
     const monday = mondays[mondayIndex]
     const timeSheet = await getTimeSheet(monday)
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
-    const activeNotificationTypes = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const activeNotificationTypes = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     if (activeNotificationTypes.length > 0) {
       return true

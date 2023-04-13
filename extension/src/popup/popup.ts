@@ -4,7 +4,7 @@ import '@fortawesome/fontawesome-free/scss/solid.scss'
 import { getEveryMondaySinceInstallation } from '@src/installation/helpers'
 import { CancelSetIntervalAsyncFn, setIntervalAsync } from '../background-tasks/background-task'
 import { getExtensionOptions } from '../extension-options/storage'
-import { getActiveNotificationTypes } from '../notifications/notifications'
+import { getTimeSheetNotifications } from '../notifications/notifications'
 import { getTimeSheet } from '../time-sheets/storage'
 import { summarizeTimeSheet } from '../time-sheets/summary'
 import { DateOnly, addDays, compareDateOnly, getDisplayDayOfWeek } from '../types/dates'
@@ -68,8 +68,6 @@ const main = async () => {
         extensionOptions,
       )
 
-      console.log('shouldIndicateNext', shouldIndicateNext)
-
       if (shouldIndicateNext) {
         nextButtonElement.classList.add('has-notification')
       } else {
@@ -107,7 +105,7 @@ const main = async () => {
     daysSavedElement.innerHTML = summary.totalDaysSaved.toString(10)
     timeLeftElement.innerHTML = summary.timeRemaining
 
-    const activeNotificationTypes = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const activeNotificationTypes = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
     if (activeNotificationTypes.length > 0) {
       activeNotificationsElement.classList.remove('hidden')

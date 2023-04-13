@@ -10,24 +10,11 @@ import {
   getTimeOnly,
   getTodayDateOnly,
   TimeOnly,
+  toDateOnlyKey,
 } from '../types/dates'
 import { ExtensionOptions } from '../types/extension-options'
+import { Notification, Notifications } from '../types/notifications'
 import { TimeSheet, TimeSheetSummary } from '../types/time-sheet'
-
-export interface DailyNotificationType {
-  type: 'daily'
-  dayOfWeek: DayOfWeek
-}
-
-export interface EndOfWeekNotificationType {
-  type: 'end-of-week'
-}
-
-export interface EndOfMonthNotificationType {
-  type: 'end-of-month'
-}
-
-export type NotificationType = DailyNotificationType | EndOfWeekNotificationType | EndOfMonthNotificationType
 
 const isPastDueStartTime = (today: DateOnly, time: TimeOnly, dueDate: DateOnly, dueStartTime: TimeOnly): boolean => {
   const dateOnlyCompare = compareDateOnly(today, dueDate)
@@ -121,15 +108,15 @@ const shouldRemindForEndOfMonth = (
   return true
 }
 
-export const getActiveNotificationTypes = async (
+export const getTimeSheetNotifications = async (
   timeSheet: TimeSheet,
   summary: TimeSheetSummary,
   extensionOptions: ExtensionOptions,
-): Promise<NotificationType[]> => {
+): Promise<Notification[]> => {
   const today = getTodayDateOnly()
   const timeOnly = getTimeOnly()
 
-  const results: NotificationType[] = []
+  const results: Notification[] = []
 
   for (const dailyDayOfWeek of daysOfWeek) {
     if (shouldRemindForDaily(today, timeOnly, dailyDayOfWeek, extensionOptions, timeSheet, summary)) {
@@ -149,21 +136,31 @@ export const getActiveNotificationTypes = async (
   if (shouldRemindForEndOfMonth(today, timeOnly, extensionOptions, summary)) {
     results.push({
       type: 'end-of-month',
+      endOfMonthDate: summary.endOfMonthReminderDate,
     })
   }
 
   return results
 }
 
-export const checkShouldNotify = async (extensionOptions: ExtensionOptions): Promise<boolean> => {
+export const getAllNotifications = async (extensionOptions: ExtensionOptions): Promise<Notifications> => {
   const mondays = await getEveryMondaySinceInstallation()
+  const notifications: Notifications = {}
 
   for (const monday of mondays) {
     const timeSheet = await getTimeSheet(monday)
     const summary = summarizeTimeSheet(timeSheet, extensionOptions)
-    const activeNotificationTypes = await getActiveNotificationTypes(timeSheet, summary, extensionOptions)
+    const timeSheetNotifications = await getTimeSheetNotifications(timeSheet, summary, extensionOptions)
 
-    if (activeNotificationTypes.length > 0) {
+    notifications[toDateOnlyKey(monday)] = timeSheetNotifications
+  }
+
+  return notifications
+}
+
+export const checkAnyTimeSheetNotifications = (notifications: Notifications): boolean => {
+  for (const [_, timeSheetNotifications] of Object.entries(notifications)) {
+    if (timeSheetNotifications.length > 0) {
       return true
     }
   }
