@@ -1,6 +1,8 @@
 # Changelog
 
-## [1.2.0] - TBD
+## [1.3.0] - TBD
+
+## [1.2.0] - 2023-04-13
 
 ### Added
 
@@ -33,6 +35,7 @@
 
 - Initial version.
 
-[1.2.0]: https://github.com/ClockStorm/clockstorm/compare/1.1.0...main
+[1.3.0]: https://github.com/ClockStorm/clockstorm/compare/1.2.0...main
+[1.2.0]: https://github.com/ClockStorm/clockstorm/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/ClockStorm/clockstorm/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/ClockStorm/clockstorm/tree/1.0.0
