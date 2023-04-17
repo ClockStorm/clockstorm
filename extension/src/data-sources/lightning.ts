@@ -1,6 +1,6 @@
 import { DateOnly, fromDateOnlyKey, minusDays } from '../types/dates'
 import { TimeCard, TimeCardStatus, TimeSheet } from '../types/time-sheet'
-import { DataSource } from './data-source'
+import { DataSource } from '../types/data-source'
 
 const getWeekEnding = (): DateOnly | null => {
   const weekEndingElement = document.querySelector('[data-ffid="weekEnding"] input') as HTMLInputElement
@@ -70,7 +70,7 @@ export const queryTimeSheet = async (): Promise<TimeSheet | null> => {
 const getProjectName = (timeCardElement: HTMLElement): string | null => {
   const columns = timeCardElement.getElementsByTagName('td')
 
-  if (columns.length === 0) {
+  if (columns.length < 2) {
     return null
   }
 
@@ -95,7 +95,7 @@ const getStatus = (timeCardElement: HTMLElement): TimeCardStatus | null => {
     return null
   }
 
-  const status = statusElement.innerText.trim().toLocaleLowerCase()
+  const status = statusElement.textContent.trim().toLocaleLowerCase()
 
   if (status !== 'submitted' && status !== 'saved' && status !== 'unsaved' && status !== 'approved') {
     return null
@@ -112,14 +112,8 @@ const getDayHours = (timecardElement: HTMLElement, dayNumber: number): number =>
     return 0
   }
 
-  let hours = 0
-
-  try {
-    hours = parseFloat(column.innerText)
-    if (isNaN(hours)) {
-      hours = 0
-    }
-  } catch (e) {
+  let hours = parseFloat(column.textContent)
+  if (isNaN(hours)) {
     hours = 0
   }
 
